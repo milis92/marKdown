@@ -1,0 +1,17 @@
+[versions]
+#build
+kotlin = "1.7.0"
+dokka = "1.7.0"
+maven-publish = "0.20.0"
+build-config = "3.1.0"
+
+[libraries]
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+gradle-buildConfig = { module = "com.github.gmazzo:gradle-buildconfig-plugin", version.ref = "build-config" }
+
+[plugins]
+kotlin-dokka-plugin = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+maven-publish-plugin = { id = "com.vanniktech.maven.publish", version.ref = "maven-publish" }
+
+[bundles]
+
