@@ -1,4 +1,4 @@
-rootProject.name = "Library template"
+rootProject.name = "markdown_dsl"
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
@@ -45,5 +45,4 @@ gradleEnterprise {
     }
 }
 
-//TODO Include your modules here
-include()
+include("library")

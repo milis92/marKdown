@@ -10,6 +10,12 @@ allprojects {
     version = "${project.property("VERSION")!!} ${System.getenv("VERSION_SUFFIX") ?: ""}"
 }
 
+tasks.withType(org.gradle.plugins.signing.Sign::class.java).configureEach sign@{
+    tasks.withType(org.gradle.api.publish.maven.tasks.AbstractPublishToMaven::class.java).configureEach publish@{
+        this@publish.dependsOn(this@sign)
+    }
+}
+
 tasks.wrapper {
     distributionType = Wrapper.DistributionType.ALL
 }
