@@ -11,13 +11,17 @@ internal class ParagrapshTest {
     @Test
     fun `when single text is added than markdown prints a single line`() {
         val actual = markdown {
-            text("text")
+            text { "text" }
+            bold { "bold" }
+            italic { "italic" }
         }.content
 
         @Language("markdown")
         val expected =
             """
             |text
+            |**bold**
+            |_italic_
             """.trimMargin()
 
         assertEquals(expected, actual)

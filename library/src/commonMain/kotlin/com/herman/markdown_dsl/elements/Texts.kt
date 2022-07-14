@@ -109,9 +109,10 @@ class ParagraphBuilder : ElementBuilder {
     }
 }
 
-fun MarkdownBuilder.paragraph(initialiser: ParagraphBuilder.() -> Unit) {
-    val text = ParagraphBuilder().apply(initialiser).build()
-    paragraph(text.content)
+fun MarkdownBuilder.text(
+    content: () -> String
+) {
+    text(content())
 }
 
 fun MarkdownBuilder.bold(
@@ -127,5 +128,12 @@ fun MarkdownBuilder.italic(
 ) {
     italic(content(), emphasis)
 }
+
+fun MarkdownBuilder.paragraph(initialiser: ParagraphBuilder.() -> Unit) {
+    val text = ParagraphBuilder().apply(initialiser).build()
+    paragraph(text.content)
+}
+
+
 
 
