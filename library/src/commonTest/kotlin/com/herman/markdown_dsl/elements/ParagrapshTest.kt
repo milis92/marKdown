@@ -1,6 +1,7 @@
 package com.herman.markdown_dsl.elements
 
 import com.herman.markdown_dsl.markdown
+import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
@@ -13,6 +14,7 @@ internal class ParagrapshTest {
             text("text")
         }.content
 
+        @Language("markdown")
         val expected =
             """
             |text
@@ -28,6 +30,7 @@ internal class ParagrapshTest {
             text("text")
         }.content
 
+        @Language("markdown")
         val expected =
             """
             |text
@@ -38,13 +41,14 @@ internal class ParagrapshTest {
     }
 
     @Test
-    fun `when paragraph with single text is added than markdown prints a single paragraph`(){
+    fun `when paragraph with single text is added than markdown prints a single paragraph`() {
         val actual = markdown {
             paragraph {
                 text { "text" }
             }
         }.content
 
+        @Language("markdown")
         val expected =
             """
             |text  
@@ -55,18 +59,19 @@ internal class ParagrapshTest {
     }
 
     @Test
-    fun `when paragraph with multiple lines is added than markdown prints a single paragraph with 2 lines`(){
+    fun `when paragraph with multiple lines is added than markdown prints a single paragraph with 2 lines`() {
         val actual = markdown {
             paragraph {
                 text { "First sentence." }
-                text { "Second sentence" }
+                text { "Second sentence." }
             }
         }.content
 
+        @Language("markdown")
         val expected =
             """
             |First sentence.  
-            |Second sentence  
+            |Second sentence.  
             |
             """.trimMargin()
 
@@ -74,7 +79,7 @@ internal class ParagrapshTest {
     }
 
     @Test
-    fun `when multiple simple paragraphs added than markdown prints multiple paragraphs`(){
+    fun `when multiple simple paragraphs added than markdown prints multiple paragraphs`() {
         val actual = markdown {
             paragraph {
                 text { "First paragraph" }
@@ -84,6 +89,7 @@ internal class ParagrapshTest {
             }
         }.content
 
+        @Language("markdown")
         val expected =
             """
             |First paragraph  
@@ -96,25 +102,63 @@ internal class ParagrapshTest {
     }
 
     @Test
-    fun `when multiple complex paragraphs added than markdown prints multiple paragraphs`(){
+    fun `when multiple complex paragraphs added than markdown prints multiple paragraphs`() {
         val actual = markdown {
             paragraph {
-                text { "First paragraph" }
-                text { "First paragraph" }
+                text { "First line" }
+                text { "Second line" }
             }
             paragraph {
-                text { "Second paragraph" }
-                text { "Second paragraph" }
+                text { "Fourth line" }
+                text { "Fifth line" }
             }
         }.content
 
+        @Language("markdown")
         val expected =
             """
-            |First paragraph  
-            |First paragraph  
+            |First line  
+            |Second line  
             |
-            |Second paragraph  
-            |Second paragraph  
+            |Fourth line  
+            |Fifth line  
+            |
+            """.trimMargin()
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `when bold and italics are used than markdown uses proper formatting`() {
+        val actual = markdown {
+            bold { "Bold" }
+            italic("Italic")
+        }.content
+
+        @Language("markdown")
+        val expected =
+            """
+            |**Bold**
+            |_Italic_
+            """.trimMargin()
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `when bold and italics are used in paragraph than markdown uses proper formatting`() {
+        val actual = markdown {
+            paragraph {
+                bold { "Bold" }
+                italic { "Italic" }
+            }
+        }.content
+
+        @Language("markdown")
+        val expected =
+            """
+            |**Bold**  
+            |_Italic_  
             |
             """.trimMargin()
 

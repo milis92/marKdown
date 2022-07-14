@@ -74,7 +74,6 @@ internal class Paragraph(
     }
 }
 
-@MarkdownElementMarker
 class ParagraphBuilder : ElementBuilder {
 
     private val elementContainer = mutableListOf<Text>()
@@ -114,4 +113,19 @@ fun MarkdownBuilder.paragraph(initialiser: ParagraphBuilder.() -> Unit) {
     val text = ParagraphBuilder().apply(initialiser).build()
     paragraph(text.content)
 }
+
+fun MarkdownBuilder.bold(
+    emphasis: Emphasis = Emphasis.Asterisks,
+    content: () -> String
+) {
+    bold(content(), emphasis)
+}
+
+fun MarkdownBuilder.italic(
+    emphasis: Emphasis = Emphasis.Underscore,
+    content: () -> String
+) {
+    italic(content(), emphasis)
+}
+
 
