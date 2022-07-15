@@ -29,6 +29,7 @@ import com.herman.markdown_dsl.elements.HeadingSizeMarker.H6
  *
  * text
  *
+ * <br></br>
  *
  * @param content Textual content of this element
  */
@@ -80,7 +81,7 @@ enum class EmphasisMarker(
  *
  * _text_
  *
- * By default, italic will be created with [underscore tag][EmphasisMarker.Underscore].
+ * By default, _italic_ will be created with [underscore tag][EmphasisMarker.Underscore].
  * If you want to use a different style, set a [emphasisMarker] to one of the values
  * specified in [EmphasisMarker]:
  * ```
@@ -92,6 +93,7 @@ enum class EmphasisMarker(
  *
  * *text*
  *
+ * <br></br>
  *
  * @param content Textual content of this element
  * @param emphasisMarker Custom marker for this element, see [EmphasisMarker]
@@ -124,7 +126,7 @@ internal class Italic(
  *
  * **text**
  *
- * By default, bold will be created with [asterisks tag][EmphasisMarker.Asterisks].
+ * By default, **bold** will be created with [asterisks tag][EmphasisMarker.Asterisks].
  * If you want to use a different style, set a [emphasisMarker] to one of the values
  * specified in [EmphasisMarker]:
  * ```
@@ -136,6 +138,7 @@ internal class Italic(
  *
  * __text__
  *
+ * <br></br>
  *
  * @param content Textual content of this element
  * @param emphasisMarker Custom marker for this element, see [EmphasisMarker]
@@ -172,7 +175,7 @@ internal class Bold(
  *
  * ***text***
  *
- * By default, bold will be created with [asterisks tag][EmphasisMarker.Asterisks].
+ * By default, ***bold*** will be created with [asterisks tag][EmphasisMarker.Asterisks].
  * If you want to use a different style, set a [emphasisMarker] to one of the values
  * specified in [EmphasisMarker]:
  * ```
@@ -212,6 +215,8 @@ internal class BoldItalic(
  * For correctness every item contained in this paragraph will be delimited with break tag (double space characters),
  * and will have a new empty line at the end.
  *
+ * <br></br>
+ *
  * ### Usage:
  *
  * ```
@@ -232,8 +237,9 @@ internal class BoldItalic(
  * ***boldItalic***
  *
  *```
- * _Note the blank after the paragraph_
+ * _Note the blank line after the paragraph_
  *
+ * <br></br>
  *
  * @param content Textual content of this element
  */
@@ -248,6 +254,7 @@ internal class Paragraph(
             .forEach { textLine ->
                 if (textLine.isNotBlank()) {
                     append(textLine)
+                    //By standard every line should end with line break and a return charactres
                     append(lineBreak)
                     appendLine()
                 }
@@ -259,29 +266,29 @@ class ParagraphBuilder : ElementBuilder {
 
     private val elementContainer = mutableListOf<Text>()
 
-    fun text(content: () -> String) {
-        elementContainer.add(Text(content()))
+    fun text(content: String) {
+        elementContainer.add(Text(content))
     }
 
     fun bold(
-        emphasisMarker: EmphasisMarker = EmphasisMarker.Asterisks,
-        content: () -> String
+        content: String,
+        emphasisMarker: EmphasisMarker = EmphasisMarker.Asterisks
     ) {
-        elementContainer.add(Bold(content(), emphasisMarker))
+        elementContainer.add(Bold(content, emphasisMarker))
     }
 
     fun italic(
-        emphasisMarker: EmphasisMarker = EmphasisMarker.Underscore,
-        content: () -> String
+        content: String,
+        emphasisMarker: EmphasisMarker = EmphasisMarker.Underscore
     ) {
-        elementContainer.add(Italic(content(), emphasisMarker))
+        elementContainer.add(Italic(content, emphasisMarker))
     }
 
     fun boldItalic(
-        emphasisMarker: EmphasisMarker = EmphasisMarker.Asterisks,
-        content: () -> String
+        content: String,
+        emphasisMarker: EmphasisMarker = EmphasisMarker.Asterisks
     ) {
-        elementContainer.add(BoldItalic(content(), emphasisMarker))
+        elementContainer.add(BoldItalic(content, emphasisMarker))
     }
 
     override fun build(): Markdown {
@@ -295,6 +302,33 @@ class ParagraphBuilder : ElementBuilder {
         }
         return Markdown(content)
     }
+}
+
+fun ParagraphBuilder.text(
+    content: () -> String
+) {
+    text(content())
+}
+
+fun ParagraphBuilder.bold(
+    emphasisMarker: EmphasisMarker = EmphasisMarker.Asterisks,
+    content: () -> String
+) {
+    bold(content(), emphasisMarker)
+}
+
+fun ParagraphBuilder.italic(
+    emphasisMarker: EmphasisMarker = EmphasisMarker.Underscore,
+    content: () -> String
+) {
+    italic(content(), emphasisMarker)
+}
+
+fun ParagraphBuilder.boldItalic(
+    emphasisMarker: EmphasisMarker = EmphasisMarker.Asterisks,
+    content: () -> String
+) {
+    boldItalic(content(), emphasisMarker)
 }
 
 fun MarkdownBuilder.text(
@@ -318,7 +352,7 @@ fun MarkdownBuilder.italic(
 }
 
 fun MarkdownBuilder.boldItalic(
-    emphasisMarker: EmphasisMarker = EmphasisMarker.Underscore,
+    emphasisMarker: EmphasisMarker = EmphasisMarker.Asterisks,
     content: () -> String
 ) {
     boldItalic(content(), emphasisMarker)

@@ -21,7 +21,11 @@ data class Markdown(val content: String) {
     override fun toString(): String = content
 }
 
-open class MarkdownBuilder {
+internal interface ElementBuilder {
+    fun build(): Markdown
+}
+
+open class MarkdownBuilder : ElementBuilder {
 
     internal val elementsContainer: MutableList<MarkdownElement> = mutableListOf()
 
@@ -95,7 +99,7 @@ open class MarkdownBuilder {
         elementsContainer.add(BlockQuote(content))
     }
 
-    internal fun build(): Markdown {
+    override fun build(): Markdown {
         val content = buildString {
             elementsContainer.stream()
                 .map { it.toMarkdown() }

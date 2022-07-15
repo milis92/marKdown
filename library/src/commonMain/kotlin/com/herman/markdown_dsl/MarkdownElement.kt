@@ -12,9 +12,4 @@ abstract class MarkdownElement {
     override fun toString() = toMarkdown()
 }
 
-internal interface ElementBuilder {
-    fun build(): Markdown
-}
-
-
 

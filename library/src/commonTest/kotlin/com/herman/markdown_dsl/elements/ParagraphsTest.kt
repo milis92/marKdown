@@ -106,7 +106,7 @@ internal class ParagraphsTest {
     }
 
     @Test
-    fun `when multiple complex paragraphs added than markdown prints multiple paragraphs`() {
+    fun `when multiple complex paragraphs are added than than output contains multiple paragraphs`() {
         val actual = markdown {
             paragraph {
                 text { "First line" }
@@ -133,7 +133,7 @@ internal class ParagraphsTest {
     }
 
     @Test
-    fun `when bold and italics are used than markdown uses proper formatting`() {
+    fun `when bold and italics are used than output is properly formatted`() {
         val actual = markdown {
             bold("bold")
             italic("italic")
@@ -152,7 +152,7 @@ internal class ParagraphsTest {
     }
 
     @Test
-    fun `when bold and italics are used in paragraph than markdown uses proper formatting`() {
+    fun `when bold and italics are used in paragraph than output is properly formatted`() {
         val actual = markdown {
             paragraph {
                 bold { "bold" }
