@@ -8,12 +8,14 @@ class BlockQuote(
 ) : MarkdownElement() {
 
     override fun toMarkdown(): String = buildString {
+        appendLine()
         text.lineSequence()
             .forEach {
                 append("> ")
                 append(it)
                 appendLine()
             }
+        appendLine()
     }
 }
 
