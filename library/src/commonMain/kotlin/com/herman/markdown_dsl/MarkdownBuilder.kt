@@ -2,13 +2,13 @@ package com.herman.markdown_dsl
 
 import com.herman.markdown_dsl.elements.BlockQuote
 import com.herman.markdown_dsl.elements.Bold
-import com.herman.markdown_dsl.elements.Emphasis
+import com.herman.markdown_dsl.elements.BoldItalic
+import com.herman.markdown_dsl.elements.EmphasisMarker
 import com.herman.markdown_dsl.elements.Heading
 import com.herman.markdown_dsl.elements.HeadingSizeMarker
 import com.herman.markdown_dsl.elements.HorizontalRule
 import com.herman.markdown_dsl.elements.HorizontalRuleStyle
 import com.herman.markdown_dsl.elements.Italic
-import com.herman.markdown_dsl.elements.LineBreak
 import com.herman.markdown_dsl.elements.ListMarker
 import com.herman.markdown_dsl.elements.OrderedList
 import com.herman.markdown_dsl.elements.Paragraph
@@ -31,23 +31,29 @@ open class MarkdownBuilder {
 
     fun bold(
         content: String,
-        emphasis: Emphasis = Emphasis.Asterisks
+        emphasisMarker: EmphasisMarker = EmphasisMarker.Asterisks
     ) {
-        elementsContainer.add(Bold(content, emphasis))
+        elementsContainer.add(Bold(content, emphasisMarker))
     }
 
     fun italic(
         content: String,
-        emphasis: Emphasis = Emphasis.Underscore
+        emphasisMarker: EmphasisMarker = EmphasisMarker.Underscore
     ) {
-        elementsContainer.add(Italic(content, emphasis))
+        elementsContainer.add(Italic(content, emphasisMarker))
+    }
+
+    fun boldItalic(
+        content: String,
+        emphasisMarker: EmphasisMarker = EmphasisMarker.Asterisks
+    ) {
+        elementsContainer.add(BoldItalic(content, emphasisMarker))
     }
 
     fun paragraph(
         content: String,
-        lineBreak: LineBreak = LineBreak.Space,
     ) {
-        elementsContainer.add(Paragraph(content, lineBreak))
+        elementsContainer.add(Paragraph(content))
     }
 
     fun heading(

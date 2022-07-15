@@ -6,14 +6,30 @@ import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
 
-internal class ParagrapshTest {
+internal class ParagraphsTest {
 
     @Test
-    fun `when single text is added than markdown prints a single line`() {
+    fun `when text element is added than output text is a single line`() {
         val actual = markdown {
             text { "text" }
-            bold { "bold" }
-            italic { "italic" }
+        }.content
+
+        @Language("markdown")
+        val expected =
+            """
+            |text
+            """.trimMargin()
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `when multiple texts elements are added than output text is in multiple lines`() {
+        val actual = markdown {
+            text("text")
+            bold("bold")
+            italic("italic")
+            boldItalic("boldItalic")
         }.content
 
         @Language("markdown")
@@ -22,30 +38,14 @@ internal class ParagrapshTest {
             |text
             |**bold**
             |_italic_
+            |***boldItalic***
             """.trimMargin()
 
         assertEquals(expected, actual)
     }
 
     @Test
-    fun `when multiple texts are added than markdown prints a multiple lines`() {
-        val actual = markdown {
-            text("text")
-            text("text")
-        }.content
-
-        @Language("markdown")
-        val expected =
-            """
-            |text
-            |text
-            """.trimMargin()
-
-        assertEquals(expected, actual)
-    }
-
-    @Test
-    fun `when paragraph with single text is added than markdown prints a single paragraph`() {
+    fun `when paragraph element with single text is added than output is valid paragraph`() {
         val actual = markdown {
             paragraph {
                 text { "text" }
@@ -63,7 +63,7 @@ internal class ParagrapshTest {
     }
 
     @Test
-    fun `when paragraph with multiple lines is added than markdown prints a single paragraph with 2 lines`() {
+    fun `when paragraph element with multiple lines is added than output is a single paragraph with 2 lines`() {
         val actual = markdown {
             paragraph {
                 text { "First sentence." }
@@ -83,7 +83,7 @@ internal class ParagrapshTest {
     }
 
     @Test
-    fun `when multiple simple paragraphs added than markdown prints multiple paragraphs`() {
+    fun `when multiple paragraphs elements are added than output is multiple valid paragraphs`() {
         val actual = markdown {
             paragraph {
                 text { "First paragraph" }
@@ -135,15 +135,17 @@ internal class ParagrapshTest {
     @Test
     fun `when bold and italics are used than markdown uses proper formatting`() {
         val actual = markdown {
-            bold { "Bold" }
-            italic("Italic")
+            bold("bold")
+            italic("italic")
+            boldItalic("boldItalic")
         }.content
 
         @Language("markdown")
         val expected =
             """
-            |**Bold**
-            |_Italic_
+            |**bold**
+            |_italic_
+            |***boldItalic***
             """.trimMargin()
 
         assertEquals(expected, actual)
@@ -153,16 +155,18 @@ internal class ParagrapshTest {
     fun `when bold and italics are used in paragraph than markdown uses proper formatting`() {
         val actual = markdown {
             paragraph {
-                bold { "Bold" }
-                italic { "Italic" }
+                bold { "bold" }
+                italic { "italic" }
+                boldItalic { "boldItalic" }
             }
         }.content
 
         @Language("markdown")
         val expected =
             """
-            |**Bold**  
-            |_Italic_  
+            |**bold**  
+            |_italic_  
+            |***boldItalic***  
             |
             """.trimMargin()
 
