@@ -26,7 +26,9 @@ class Header(
     }
 }
 
-enum class UnderlinedHeaderStyle(internal val tag: String) {
+enum class UnderlinedHeaderStyle(
+    internal val tag: String
+    ) {
     H1("="),
     H2("-")
 }
@@ -57,5 +59,5 @@ fun MarkdownBuilder.underlineHeader(
     style: UnderlinedHeaderStyle = UnderlinedHeaderStyle.H1,
     text: () -> String
 ) {
-    underlineHeader(text(), style)
+    underlinedHeader(text(), style)
 }

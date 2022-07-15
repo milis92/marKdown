@@ -1,5 +1,6 @@
 package com.herman.markdown_dsl
 
+import com.herman.markdown_dsl.elements.BlockQuote
 import com.herman.markdown_dsl.elements.Bold
 import com.herman.markdown_dsl.elements.Emphasis
 import com.herman.markdown_dsl.elements.Header
@@ -25,11 +26,17 @@ open class MarkdownBuilder {
         elementsContainer.add(Text(content))
     }
 
-    fun bold(content: String, emphasis: Emphasis = Emphasis.Asterisks) {
+    fun bold(
+        content: String,
+        emphasis: Emphasis = Emphasis.Asterisks
+    ) {
         elementsContainer.add(Bold(content, emphasis))
     }
 
-    fun italic(content: String, emphasis: Emphasis = Emphasis.Underscore) {
+    fun italic(
+        content: String,
+        emphasis: Emphasis = Emphasis.Underscore
+    ) {
         elementsContainer.add(Italic(content, emphasis))
     }
 
@@ -40,16 +47,30 @@ open class MarkdownBuilder {
         elementsContainer.add(Paragraph(content, lineBreak))
     }
 
-    fun header(content: String, style: HeaderSize = HeaderSize.H1) {
+    fun header(
+        content: String,
+        style: HeaderSize = HeaderSize.H1
+    ) {
         elementsContainer.add(Header(content, style))
     }
 
-    fun underlineHeader(content: String, style: UnderlinedHeaderStyle = UnderlinedHeaderStyle.H1) {
+    fun underlinedHeader(
+        content: String,
+        style: UnderlinedHeaderStyle = UnderlinedHeaderStyle.H1
+    ) {
         elementsContainer.add(UnderlinedHeader(content, style))
     }
 
-    fun horizontalRule(style: HorizontalRuleStyle = HorizontalRuleStyle.Hyphen) {
+    fun horizontalRule(
+        style: HorizontalRuleStyle = HorizontalRuleStyle.Hyphen
+    ) {
         elementsContainer.add(HorizontalRule(style))
+    }
+
+    fun blockQuote(
+        content: String
+    ) {
+        elementsContainer.add(BlockQuote(content))
     }
 
     internal fun build(): Markdown {
