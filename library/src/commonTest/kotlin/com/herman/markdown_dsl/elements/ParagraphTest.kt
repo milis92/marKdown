@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
 
-internal class ParagraphsTest {
+internal class ParagraphTest {
 
     @Test
     fun `when text element is added than output text is a single line`() {
@@ -26,10 +26,10 @@ internal class ParagraphsTest {
     @Test
     fun `when multiple texts elements are added than output text is in multiple lines`() {
         val actual = markdown {
-            text("text")
-            bold("bold")
-            italic("italic")
-            boldItalic("boldItalic")
+            text(content = "text")
+            bold { "bold" }
+            italic { "italic" }
+            boldItalic { "boldItalic" }
         }.content
 
         @Language("markdown")
@@ -39,6 +39,47 @@ internal class ParagraphsTest {
             |**bold**
             |_italic_
             |***boldItalic***
+            """.trimMargin()
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `when bold and italics are used than output is properly formatted`() {
+        val actual = markdown {
+            bold { "bold" }
+            italic { "italic" }
+            boldItalic { "boldItalic" }
+        }.content
+
+        @Language("markdown")
+        val expected =
+            """
+            |**bold**
+            |_italic_
+            |***boldItalic***
+            """.trimMargin()
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `when bold and italics are used in paragraph than output is properly formatted`() {
+        val actual = markdown {
+            paragraph {
+                bold { "bold" }
+                italic { "italic" }
+                boldItalic { "boldItalic" }
+            }
+        }.content
+
+        @Language("markdown")
+        val expected =
+            """
+            |**bold**  
+            |_italic_  
+            |***boldItalic***  
+            |
             """.trimMargin()
 
         assertEquals(expected, actual)
@@ -133,40 +174,25 @@ internal class ParagraphsTest {
     }
 
     @Test
-    fun `when bold and italics are used than output is properly formatted`() {
-        val actual = markdown {
-            bold("bold")
-            italic("italic")
-            boldItalic("boldItalic")
-        }.content
-
-        @Language("markdown")
-        val expected =
-            """
-            |**bold**
-            |_italic_
-            |***boldItalic***
-            """.trimMargin()
-
-        assertEquals(expected, actual)
-    }
-
-    @Test
-    fun `when bold and italics are used in paragraph than output is properly formatted`() {
+    fun `when paragraph with multiline text is added than output contains multiple paragraphs`() {
         val actual = markdown {
             paragraph {
-                bold { "bold" }
-                italic { "italic" }
-                boldItalic { "boldItalic" }
+                text {
+                    """
+                                |First line.
+                                |Second line.
+                                """.trimMargin()
+                }
+                text { "Third line." }
             }
         }.content
 
         @Language("markdown")
         val expected =
             """
-            |**bold**  
-            |_italic_  
-            |***boldItalic***  
+            |First line.
+            |Second line.  
+            |Third line.  
             |
             """.trimMargin()
 

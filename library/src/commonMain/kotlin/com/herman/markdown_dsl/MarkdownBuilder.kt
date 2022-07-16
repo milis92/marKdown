@@ -9,10 +9,12 @@ import com.herman.markdown_dsl.elements.HeadingSizeMarker
 import com.herman.markdown_dsl.elements.HorizontalRule
 import com.herman.markdown_dsl.elements.HorizontalRuleStyle
 import com.herman.markdown_dsl.elements.Italic
+import com.herman.markdown_dsl.elements.ListBuilder
 import com.herman.markdown_dsl.elements.ListMarker
 import com.herman.markdown_dsl.elements.OrderedList
 import com.herman.markdown_dsl.elements.Paragraph
 import com.herman.markdown_dsl.elements.Text
+import com.herman.markdown_dsl.elements.TextBuilder
 import com.herman.markdown_dsl.elements.UnderlinedHeading
 import com.herman.markdown_dsl.elements.UnderlinedHeadingStyle
 import com.herman.markdown_dsl.elements.UnorderedList
@@ -21,85 +23,91 @@ data class Markdown(val content: String) {
     override fun toString(): String = content
 }
 
-internal interface ElementBuilder {
-    fun build(): Markdown
-}
+@MarkdownBuilderMarker
+open class MarkdownBuilder(
+) : TextBuilder, ListBuilder {
 
-open class MarkdownBuilder : ElementBuilder {
+    private val elementsContainer: MutableList<MarkdownElement> = mutableListOf()
 
-    internal val elementsContainer: MutableList<MarkdownElement> = mutableListOf()
-
-    fun text(content: String) {
-        elementsContainer.add(Text(content))
+    internal fun addElement(
+        element: MarkdownElement
+    ) {
+        elementsContainer.add(element)
     }
 
-    fun bold(
-        content: String,
-        emphasisMarker: EmphasisMarker = EmphasisMarker.Asterisks
+    override fun text(
+        content: String
     ) {
-        elementsContainer.add(Bold(content, emphasisMarker))
+        addElement(Text(content))
     }
 
-    fun italic(
+    override fun bold(
         content: String,
-        emphasisMarker: EmphasisMarker = EmphasisMarker.Underscore
+        emphasisMarker: EmphasisMarker
     ) {
-        elementsContainer.add(Italic(content, emphasisMarker))
+        addElement(Bold(content, emphasisMarker))
     }
 
-    fun boldItalic(
+    override fun italic(
         content: String,
-        emphasisMarker: EmphasisMarker = EmphasisMarker.Asterisks
+        emphasisMarker: EmphasisMarker
     ) {
-        elementsContainer.add(BoldItalic(content, emphasisMarker))
+        addElement(Italic(content, emphasisMarker))
     }
 
-    fun paragraph(
+    override fun boldItalic(
         content: String,
+        emphasisMarker: EmphasisMarker
     ) {
-        elementsContainer.add(Paragraph(content))
+        addElement(BoldItalic(content, emphasisMarker))
     }
 
     fun heading(
         content: String,
-        style: HeadingSizeMarker = HeadingSizeMarker.H1
+        style: HeadingSizeMarker
     ) {
-        elementsContainer.add(Heading(content, style))
+        addElement(Heading(content, style))
     }
 
     fun underlinedHeading(
         content: String,
-        style: UnderlinedHeadingStyle = UnderlinedHeadingStyle.H1
+        style: UnderlinedHeadingStyle
     ) {
-        elementsContainer.add(UnderlinedHeading(content, style))
+        addElement(UnderlinedHeading(content, style))
     }
 
     fun horizontalRule(
-        style: HorizontalRuleStyle = HorizontalRuleStyle.Hyphen
+        style: HorizontalRuleStyle
     ) {
-        elementsContainer.add(HorizontalRule(style))
-    }
-
-    fun orderedList(
-        content: List<String>
-    ) {
-        elementsContainer.add(OrderedList(content))
-    }
-
-    fun unorderedList(
-        content: List<String>,
-        listMarker: ListMarker = ListMarker.Asterisks
-    ) {
-        elementsContainer.add(UnorderedList(content, listMarker))
+        addElement(HorizontalRule(style))
     }
 
     fun blockQuote(
         content: String
     ) {
-        elementsContainer.add(BlockQuote(content))
+        addElement(BlockQuote(content))
     }
 
-    override fun build(): Markdown {
+    fun paragraph(
+        content: String
+    ) {
+        addElement(Paragraph(content.lines()))
+    }
+
+    override fun orderedList(
+        content: List<String>
+    ) {
+        addElement(OrderedList(content))
+    }
+
+    override fun unorderedList(
+        content: List<String>,
+        listMarker: ListMarker
+    ) {
+        addElement(UnorderedList(content, listMarker))
+    }
+
+    fun build(): Markdown {
         val content = buildString {
             elementsContainer.stream()
                 .map { it.toMarkdown() }
@@ -112,7 +120,9 @@ open class MarkdownBuilder : ElementBuilder {
     }
 }
 
-fun markdown(initialiser: @MarkdownElementMarker MarkdownBuilder.() -> Unit): Markdown {
+inline fun markdown(
+    initialiser: @MarkdownBuilderMarker MarkdownBuilder.() -> Unit
+): Markdown {
     return MarkdownBuilder().apply(initialiser).build()
 }
 

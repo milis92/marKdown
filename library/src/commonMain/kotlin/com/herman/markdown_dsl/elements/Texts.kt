@@ -1,15 +1,6 @@
 package com.herman.markdown_dsl.elements
 
-import com.herman.markdown_dsl.ElementBuilder
-import com.herman.markdown_dsl.Markdown
-import com.herman.markdown_dsl.MarkdownBuilder
 import com.herman.markdown_dsl.MarkdownElement
-import com.herman.markdown_dsl.elements.HeadingSizeMarker.H1
-import com.herman.markdown_dsl.elements.HeadingSizeMarker.H2
-import com.herman.markdown_dsl.elements.HeadingSizeMarker.H3
-import com.herman.markdown_dsl.elements.HeadingSizeMarker.H4
-import com.herman.markdown_dsl.elements.HeadingSizeMarker.H5
-import com.herman.markdown_dsl.elements.HeadingSizeMarker.H6
 
 /**
  * ## Simple text
@@ -33,7 +24,7 @@ import com.herman.markdown_dsl.elements.HeadingSizeMarker.H6
  *
  * @param content Textual content of this element
  */
-open class Text(
+internal class Text(
     private val content: String
 ) : MarkdownElement() {
     override fun toMarkdown(): String = buildString {
@@ -101,7 +92,7 @@ enum class EmphasisMarker(
 internal class Italic(
     private val content: String,
     private val emphasisMarker: EmphasisMarker
-) : Text(content) {
+) : MarkdownElement() {
     override fun toMarkdown(): String = buildString {
         content.lineSequence()
             .forEach { line ->
@@ -146,7 +137,7 @@ internal class Italic(
 internal class Bold(
     private val content: String,
     private val emphasisMarker: EmphasisMarker
-) : Text(content) {
+) : MarkdownElement() {
     override fun toMarkdown(): String = buildString {
         content.lineSequence()
             .forEach { line ->
@@ -194,7 +185,7 @@ internal class Bold(
 internal class BoldItalic(
     private val content: String,
     private val emphasisMarker: EmphasisMarker
-) : Text(content) {
+) : MarkdownElement() {
     override fun toMarkdown(): String = buildString {
         content.lineSequence()
             .forEach { line ->
@@ -209,160 +200,42 @@ internal class BoldItalic(
     }
 }
 
-/**
- * ## [Paragraph](https://daringfireball.net/projects/markdown/syntax#p)
- *
- * For correctness every item contained in this paragraph will be delimited with break tag (double space characters),
- * and will have a new empty line at the end.
- *
- * <br></br>
- *
- * ### Usage:
- *
- * ```
- * markdown {
- *     paragraph {
- *         text { "text" }
- *         bold { "bold" }
- *         italic { "italic" }
- *         boldItalic { "boldItalic" }
- *     }
- * }
- * ```
- * That will produce:
- *```
- * text
- * **bold**
- * _italic_
- * ***boldItalic***
- *
- *```
- * _Note the blank line after the paragraph_
- *
- * <br></br>
- *
- * @param content Textual content of this element
- */
-internal class Paragraph(
-    private val content: String
-) : Text(content) {
+interface TextBuilder {
+    fun text(content: String)
 
-    private val lineBreak = "  "
+    fun bold(content: String, emphasisMarker: EmphasisMarker = EmphasisMarker.Asterisks)
 
-    override fun toMarkdown(): String = buildString {
-        content.lineSequence()
-            .forEach { textLine ->
-                if (textLine.isNotBlank()) {
-                    append(textLine)
-                    //By standard every line should end with line break and a return charactres
-                    append(lineBreak)
-                    appendLine()
-                }
-            }
-    }
+    fun italic(content: String, emphasisMarker: EmphasisMarker = EmphasisMarker.Underscore)
+
+    fun boldItalic(content: String, emphasisMarker: EmphasisMarker = EmphasisMarker.Asterisks)
 }
 
-class ParagraphBuilder : ElementBuilder {
-
-    private val elementContainer = mutableListOf<Text>()
-
-    fun text(content: String) {
-        elementContainer.add(Text(content))
-    }
-
-    fun bold(
-        content: String,
-        emphasisMarker: EmphasisMarker = EmphasisMarker.Asterisks
-    ) {
-        elementContainer.add(Bold(content, emphasisMarker))
-    }
-
-    fun italic(
-        content: String,
-        emphasisMarker: EmphasisMarker = EmphasisMarker.Underscore
-    ) {
-        elementContainer.add(Italic(content, emphasisMarker))
-    }
-
-    fun boldItalic(
-        content: String,
-        emphasisMarker: EmphasisMarker = EmphasisMarker.Asterisks
-    ) {
-        elementContainer.add(BoldItalic(content, emphasisMarker))
-    }
-
-    override fun build(): Markdown {
-        val content = buildString {
-            elementContainer.stream()
-                .map { it.toMarkdown() }
-                .forEach { element ->
-                    append(element)
-                    appendLine()
-                }
-        }
-        return Markdown(content)
-    }
-}
-
-fun ParagraphBuilder.text(
+inline fun TextBuilder.text(
     content: () -> String
 ) {
     text(content())
 }
 
-fun ParagraphBuilder.bold(
+inline fun TextBuilder.bold(
     emphasisMarker: EmphasisMarker = EmphasisMarker.Asterisks,
     content: () -> String
 ) {
     bold(content(), emphasisMarker)
 }
 
-fun ParagraphBuilder.italic(
+inline fun TextBuilder.italic(
     emphasisMarker: EmphasisMarker = EmphasisMarker.Underscore,
     content: () -> String
 ) {
     italic(content(), emphasisMarker)
 }
 
-fun ParagraphBuilder.boldItalic(
+inline fun TextBuilder.boldItalic(
     emphasisMarker: EmphasisMarker = EmphasisMarker.Asterisks,
     content: () -> String
 ) {
     boldItalic(content(), emphasisMarker)
 }
-
-fun MarkdownBuilder.text(
-    content: () -> String
-) {
-    text(content())
-}
-
-fun MarkdownBuilder.bold(
-    emphasisMarker: EmphasisMarker = EmphasisMarker.Asterisks,
-    content: () -> String
-) {
-    bold(content(), emphasisMarker)
-}
-
-fun MarkdownBuilder.italic(
-    emphasisMarker: EmphasisMarker = EmphasisMarker.Underscore,
-    content: () -> String
-) {
-    italic(content(), emphasisMarker)
-}
-
-fun MarkdownBuilder.boldItalic(
-    emphasisMarker: EmphasisMarker = EmphasisMarker.Asterisks,
-    content: () -> String
-) {
-    boldItalic(content(), emphasisMarker)
-}
-
-fun MarkdownBuilder.paragraph(initialiser: ParagraphBuilder.() -> Unit) {
-    val text = ParagraphBuilder().apply(initialiser).build()
-    paragraph(text.content)
-}
-
 
 
 

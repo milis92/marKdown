@@ -63,14 +63,15 @@ import com.herman.markdown_dsl.MarkdownElement
  *
  * @param content Textual content of this element
  */
-class BlockQuote(
+internal class BlockQuote(
     private val content: String
 ) : MarkdownElement() {
 
     override fun toMarkdown(): String = buildString {
         appendLine()
         content
-            .removeSurrounding("\n")
+            .removePrefix("\n")
+            .removeSuffix("\n")
             .lineSequence()
             .forEach { content ->
                 // Append blockquote tag
@@ -86,7 +87,9 @@ class BlockQuote(
     }
 }
 
-fun MarkdownBuilder.blockQuote(initialiser: MarkdownBuilder.() -> Unit) {
+inline fun MarkdownBuilder.blockQuote(
+    initialiser: MarkdownBuilder.() -> Unit
+) {
     val blockQuoteBuilder = MarkdownBuilder().apply(initialiser).build()
     blockQuote(blockQuoteBuilder.content)
 }

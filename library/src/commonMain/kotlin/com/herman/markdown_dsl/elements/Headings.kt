@@ -18,9 +18,9 @@ import com.herman.markdown_dsl.MarkdownElement
  * ###### [H6]
  */
 enum class HeadingSizeMarker(
-    internal val numberOfHashes: Int
+    internal val tag: String
 ) {
-    H1(1), H2(2), H3(3), H4(4), H5(5), H6(6)
+    H1("#"), H2("##"), H3("###"), H4("####"), H5("#####"), H6("######")
 }
 
 /**
@@ -67,9 +67,7 @@ internal class Heading(
         // For compatibility separate heading from previous content with a new line
         appendLine()
         // Append heading tags
-        repeat(size.numberOfHashes) {
-            append("#")
-        }
+        append(size.tag)
         // For compatibility separate heading tag from heading content
         append(" ")
         // Append sanitised content
@@ -138,7 +136,7 @@ enum class UnderlinedHeadingStyle(
  * @param text Content for the heading
  * @param size Custom size style for this heading, see [UnderlinedHeadingStyle]
  */
-class UnderlinedHeading(
+internal class UnderlinedHeading(
     private val text: String,
     private val size: UnderlinedHeadingStyle
 ) : MarkdownElement() {
@@ -158,14 +156,14 @@ class UnderlinedHeading(
     }
 }
 
-fun MarkdownBuilder.heading(
+inline fun MarkdownBuilder.heading(
     style: HeadingSizeMarker = HeadingSizeMarker.H1,
     text: () -> String
 ) {
     heading(text(), style)
 }
 
-fun MarkdownBuilder.underlinedHeading(
+inline fun MarkdownBuilder.underlinedHeading(
     style: UnderlinedHeadingStyle = UnderlinedHeadingStyle.H1,
     text: () -> String
 ) {

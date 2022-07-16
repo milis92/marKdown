@@ -2,14 +2,16 @@ package com.herman.markdown_dsl
 
 @DslMarker
 @Target(AnnotationTarget.CLASS, AnnotationTarget.TYPE)
-annotation class MarkdownElementMarker
+annotation class MarkdownBuilderMarker
 
-@MarkdownElementMarker
+@MarkdownBuilderMarker
+internal interface ElementBuilder<out T : MarkdownElement> {
+    fun build(): T
+}
+
 abstract class MarkdownElement {
 
     abstract fun toMarkdown(): String
 
     override fun toString() = toMarkdown()
 }
-
-

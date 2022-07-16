@@ -28,8 +28,8 @@ internal class BlockQuoteTest {
     fun `when blockquote contains multiple text elements than output blockquote is properly separated`() {
         val actual = markdown {
             blockQuote {
-                text("text")
-                text("text")
+                text(content = "text")
+                text(content = "text")
             }
         }.content
 
@@ -38,6 +38,33 @@ internal class BlockQuoteTest {
             """
             |
             |> text
+            |> text
+            |
+            """.trimMargin()
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `when blockquote contains text element with multiple lines than output blockquote is properly separated`() {
+        val actual = markdown {
+            blockQuote {
+                text {
+                    """
+                    |First line.
+                    |Second line.
+                    """.trimMargin()
+                }
+                text(content = "text")
+            }
+        }.content
+
+        @Language("markdown")
+        val expected =
+            """
+            |
+            |> First line.
+            |> Second line.
             |> text
             |
             """.trimMargin()
@@ -69,7 +96,6 @@ internal class BlockQuoteTest {
             |>
             |> text  
             |> text  
-            |>
             |
             """.trimMargin()
 
@@ -111,7 +137,6 @@ internal class BlockQuoteTest {
             |>
             |> text  
             |> text  
-            |>
             |
             |
             |> text  
@@ -119,7 +144,6 @@ internal class BlockQuoteTest {
             |>
             |> text  
             |> text  
-            |>
             |
             """.trimMargin()
 
@@ -131,8 +155,8 @@ internal class BlockQuoteTest {
         val actual = markdown {
             blockQuote {
                 blockQuote {
-                    text("text")
-                    text("text")
+                    text(content = "text")
+                    text(content = "text")
                 }
             }
         }.content
@@ -150,7 +174,7 @@ internal class BlockQuoteTest {
     }
 
     @Test
-    fun `when blockquote contains nested blockquotes with paragrapsh than output blockquote is properly indented`() {
+    fun `when blockquote contains nested blockquotes with paragraph than output blockquote is properly indented`() {
         val actual = markdown {
             blockQuote {
                 blockQuote {
@@ -175,7 +199,6 @@ internal class BlockQuoteTest {
             |> >
             |> > text  
             |> > text  
-            |> >
             |
             """.trimMargin()
 

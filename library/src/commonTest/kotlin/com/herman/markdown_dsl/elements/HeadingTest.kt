@@ -5,12 +5,12 @@ import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
-class HeadingsTest {
+class HeadingTest {
 
     @Test
     fun `when heading element is used than output heading is prefixed with correct tag`() {
         val actual = markdown {
-            heading("Heading")
+            heading { "Heading" }
         }.content
 
         @Language("markdown")
@@ -26,8 +26,8 @@ class HeadingsTest {
     @Test
     fun `when heading element is after other element then output heading is separated by a new line`() {
         val actual = markdown {
-            heading("Heading 1")
-            heading("Heading 2")
+            heading { "Heading 1" }
+            heading { "Heading 2" }
         }.content
 
         @Language("markdown")
@@ -97,11 +97,10 @@ class HeadingsTest {
         assertEquals(expected, actual)
     }
 
-
     @Test
     fun `when underlinedHeading element is used than output heading is underlined with correct tag`() {
         val actual = markdown {
-            underlinedHeading("Heading")
+            underlinedHeading { "Heading" }
         }.content
 
         @Language("markdown")
@@ -118,8 +117,8 @@ class HeadingsTest {
     @Test
     fun `when underlinedHeading element is after other element then output heading is separated by a new line`() {
         val actual = markdown {
-            underlinedHeading("Heading 1")
-            underlinedHeading("Heading 2")
+            underlinedHeading { "Heading 1" }
+            underlinedHeading { "Heading 2" }
         }.content
 
         @Language("markdown")
@@ -181,5 +180,4 @@ class HeadingsTest {
 
         assertEquals(expected, actual)
     }
-
 }
