@@ -8,14 +8,16 @@ import org.junit.jupiter.api.Test
 internal class UnorderedListTest {
 
     @Test
-    fun `when list contains paragraphs than items in the output are properly indented`() {
+    fun `unordered list with paragraph indents paragraphs properly`() {
         val actual = markdown {
             unorderedList {
-                paragraph {
-                    text { "First item" }
-                    text { "Second line" }
+                item {
+                    paragraph {
+                        line("First item")
+                        line("Second line")
+                    }
                 }
-                text { "Second item" }
+                item("Second item")
             }
         }.content
 
@@ -26,25 +28,26 @@ internal class UnorderedListTest {
             |   Second line  
             |   
             |*  Second item
-            |
             """.trimMargin()
 
         assertEquals(expected, actual)
     }
 
     @Test
-    fun `when list contains sublist than items in the output are properly indented`() {
+    fun `unordered list with a unordered sublist indents sublist properly`() {
         val actual = markdown {
             unorderedList {
-                paragraph {
-                    text { "First item" }
-                    text { "Second line" }
+                item {
+                    paragraph {
+                        line("First item")
+                        line("Second line")
+                    }
                     unorderedList {
-                        text { "First sub item" }
-                        text { "Second sub item" }
+                        item("First sub item")
+                        item("Second sub item")
                     }
                 }
-                text { "Second item" }
+                item("Second item")
             }
         }.content
 
@@ -54,36 +57,33 @@ internal class UnorderedListTest {
             |*  First item  
             |   Second line  
             |   *  First sub item
-            |   *  Second sub item  
+            |   *  Second sub item
             |   
             |*  Second item
-            |
             """.trimMargin()
 
         assertEquals(expected, actual)
     }
 
     @Test
-    fun `when list is inside a blockquote than items in the output are properly indented`() {
+    fun `unordered list with blockquote indents blockquote properly`() {
         val actual = markdown {
             blockQuote {
                 unorderedList {
-                    text { "First item" }
-                    text { "Second item" }
+                    item("First item")
+                    item("Second item")
                 }
-                text { "Second sentence" }
+                paragraph("Second sentence")
             }
         }.content
 
         @Language("markdown")
         val expected =
             """
-            |
             |> *  First item
             |> *  Second item
             |>
             |> Second sentence
-            |
             """.trimMargin()
 
         assertEquals(expected, actual)

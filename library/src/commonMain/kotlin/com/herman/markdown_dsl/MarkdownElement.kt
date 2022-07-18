@@ -4,9 +4,12 @@ package com.herman.markdown_dsl
 @Target(AnnotationTarget.CLASS, AnnotationTarget.TYPE)
 annotation class MarkdownBuilderMarker
 
-@MarkdownBuilderMarker
 internal interface ElementBuilder<out T : MarkdownElement> {
     fun build(): T
+}
+
+interface ElementContainerBuilder {
+    fun addToContainer(element: MarkdownElement)
 }
 
 abstract class MarkdownElement {

@@ -8,12 +8,12 @@ import org.junit.jupiter.api.Test
 internal class OrderedListTest {
 
     @Test
-    fun `when list contais multiple items than output contains properly formatted list`() {
+    fun `list with many items indents all items properly`() {
         val numberOfItems = 100
         val actual = markdown {
             orderedList {
                 repeat(numberOfItems) {
-                    text { "Item" }
+                    item("Item")
                 }
 
             }
@@ -28,20 +28,22 @@ internal class OrderedListTest {
                 append("Item")
                 appendLine()
             }
-        }
+        }.trim()
 
         assertEquals(expected, actual)
     }
 
     @Test
-    fun `when list contains paragraphs than items in the output are properly indented`() {
+    fun `ordered list with paragraph indents paragraphs properly`() {
         val actual = markdown {
             orderedList {
-                paragraph {
-                    text { "First item" }
-                    text { "Second line" }
+                item {
+                    paragraph {
+                        line { "First item" }
+                        line { "Second line" }
+                    }
                 }
-                text { "Second item" }
+                item("Second item")
             }
         }.content
 
@@ -52,24 +54,23 @@ internal class OrderedListTest {
             |    Second line  
             |
             |2.  Second item
-            |
             """.trimMargin()
 
         assertEquals(expected, actual)
     }
 
     @Test
-    fun `when list contains a ordered sublist than items in the output are properly indented`() {
+    fun `ordered list with a ordered sublist indents sublist properly`() {
         val actual = markdown {
             orderedList {
-                paragraph {
-                    text { "First item" }
+                item {
+                    paragraph("First item")
                     orderedList {
-                        text { "First sub item" }
-                        text { "Second sub item" }
+                        item("First sub item")
+                        item("Second sub item")
                     }
                 }
-                text { "Second item" }
+                item("Second item")
             }
         }.content
 
@@ -78,27 +79,28 @@ internal class OrderedListTest {
             """
             |1.  First item  
             |    1.  First sub item
-            |    2.  Second sub item  
+            |    2.  Second sub item
             |
             |2.  Second item
-            |
             """.trimMargin()
 
         assertEquals(expected, actual)
     }
 
     @Test
-    fun `when list contains a unordered sublist than items in the output are properly indented`() {
+    fun `ordered list with a unordered sublist indents sublist properly`() {
         val actual = markdown {
             orderedList {
-                paragraph {
-                    text { "First item" }
+                item {
+                    paragraph {
+                        line { "First item" }
+                    }
                     unorderedList {
-                        text { "First sub item" }
-                        text { "Second sub item" }
+                        item("First sub item")
+                        item("Second sub item")
                     }
                 }
-                text { "Second item" }
+                item("Second item")
             }
         }.content
 
@@ -107,41 +109,35 @@ internal class OrderedListTest {
             """
             |1.  First item  
             |    *  First sub item
-            |    *  Second sub item  
+            |    *  Second sub item
             |
             |2.  Second item
-            |
             """.trimMargin()
 
         assertEquals(expected, actual)
     }
 
-
     @Test
-    fun `when list is inside a blockquote than items in the output are properly indented`() {
+    fun `ordered list with blockquote indents blockquote properly`() {
         val actual = markdown {
             blockQuote {
                 orderedList {
-                    text { "First item" }
-                    text { "Second item" }
+                    item("First item")
+                    item("Second item")
                 }
-                text { "Second sentence" }
+                paragraph("Second sentence")
             }
         }.content
 
         @Language("markdown")
         val expected =
             """
-            |
             |> 1.  First item
             |> 2.  Second item
             |>
             |> Second sentence
-            |
             """.trimMargin()
 
         assertEquals(expected, actual)
     }
-
-
 }

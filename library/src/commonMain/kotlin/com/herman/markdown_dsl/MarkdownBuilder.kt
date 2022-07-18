@@ -1,20 +1,18 @@
 package com.herman.markdown_dsl
 
 import com.herman.markdown_dsl.elements.BlockQuote
-import com.herman.markdown_dsl.elements.Bold
-import com.herman.markdown_dsl.elements.BoldItalic
-import com.herman.markdown_dsl.elements.EmphasisMarker
+import com.herman.markdown_dsl.elements.BlockQuoteContainerBuilder
 import com.herman.markdown_dsl.elements.Heading
+import com.herman.markdown_dsl.elements.HeadingContainerBuilder
 import com.herman.markdown_dsl.elements.HeadingSizeMarker
 import com.herman.markdown_dsl.elements.HorizontalRule
+import com.herman.markdown_dsl.elements.HorizontalRuleContainerBuilder
 import com.herman.markdown_dsl.elements.HorizontalRuleStyle
-import com.herman.markdown_dsl.elements.Italic
-import com.herman.markdown_dsl.elements.ListBuilder
+import com.herman.markdown_dsl.elements.ListContainerBuilder
 import com.herman.markdown_dsl.elements.ListMarker
 import com.herman.markdown_dsl.elements.OrderedList
 import com.herman.markdown_dsl.elements.Paragraph
-import com.herman.markdown_dsl.elements.Text
-import com.herman.markdown_dsl.elements.TextBuilder
+import com.herman.markdown_dsl.elements.ParagraphContainerBuilder
 import com.herman.markdown_dsl.elements.UnderlinedHeading
 import com.herman.markdown_dsl.elements.UnderlinedHeadingStyle
 import com.herman.markdown_dsl.elements.UnorderedList
@@ -24,88 +22,63 @@ data class Markdown(val content: String) {
 }
 
 @MarkdownBuilderMarker
-open class MarkdownBuilder(
-) : TextBuilder, ListBuilder {
+open class MarkdownBuilder : ParagraphContainerBuilder,
+    ListContainerBuilder, BlockQuoteContainerBuilder, HeadingContainerBuilder, HorizontalRuleContainerBuilder {
 
     private val elementsContainer: MutableList<MarkdownElement> = mutableListOf()
 
-    internal fun addElement(
+    override fun addToContainer(
         element: MarkdownElement
     ) {
         elementsContainer.add(element)
     }
 
-    override fun text(
-        content: String
-    ) {
-        addElement(Text(content))
-    }
-
-    override fun bold(
-        content: String,
-        emphasisMarker: EmphasisMarker
-    ) {
-        addElement(Bold(content, emphasisMarker))
-    }
-
-    override fun italic(
-        content: String,
-        emphasisMarker: EmphasisMarker
-    ) {
-        addElement(Italic(content, emphasisMarker))
-    }
-
-    override fun boldItalic(
-        content: String,
-        emphasisMarker: EmphasisMarker
-    ) {
-        addElement(BoldItalic(content, emphasisMarker))
-    }
-
-    fun heading(
+    override fun heading(
         content: String,
         style: HeadingSizeMarker
     ) {
-        addElement(Heading(content, style))
+        addToContainer(Heading(content, style))
     }
 
-    fun underlinedHeading(
+    override fun underlinedHeading(
         content: String,
         style: UnderlinedHeadingStyle
     ) {
-        addElement(UnderlinedHeading(content, style))
+        addToContainer(UnderlinedHeading(content, style))
     }
 
-    fun horizontalRule(
+    override fun horizontalRule(
         style: HorizontalRuleStyle
     ) {
-        addElement(HorizontalRule(style))
+        addToContainer(HorizontalRule(style))
     }
 
-    fun blockQuote(
+    override fun blockQuote(
         content: String
     ) {
-        addElement(BlockQuote(content))
+        addToContainer(BlockQuote(content))
     }
 
-    fun paragraph(
-        content: String
-    ) {
-        addElement(Paragraph(content.lines()))
+    override fun orderedList(items: List<String>) {
+        addToContainer(OrderedList(items))
     }
 
-    override fun orderedList(
-        content: List<String>
-    ) {
-        addElement(OrderedList(content))
+    override fun unorderedList(items: List<String>, style: ListMarker) {
+        addToContainer(UnorderedList(items, style))
     }
 
-    override fun unorderedList(
-        content: List<String>,
-        listMarker: ListMarker
-    ) {
-        addElement(UnorderedList(content, listMarker))
-    }
+    /**
+     * @suppress
+     */
+    @Suppress("UNUSED_PARAMETER")
+    @Deprecated(
+        level = DeprecationLevel.ERROR,
+        message = "Invalid DSL Scope",
+        replaceWith = ReplaceWith("")
+    )
+    fun markdown(
+        initialiser: (@MarkdownBuilderMarker MarkdownBuilder).() -> Unit
+    ) = Unit
 
     fun build(): Markdown {
         val content = buildString {
@@ -115,16 +88,14 @@ open class MarkdownBuilder(
                     append(element)
                     appendLine()
                 }
-        }.removeSuffix("\n")
+        }.trim()
         return Markdown(content)
     }
 }
 
 inline fun markdown(
     initialiser: @MarkdownBuilderMarker MarkdownBuilder.() -> Unit
-): Markdown {
-    return MarkdownBuilder().apply(initialiser).build()
-}
+): Markdown = MarkdownBuilder().apply(initialiser).build()
 
 
 

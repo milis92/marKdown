@@ -1,5 +1,6 @@
 package com.herman.markdown_dsl.elements
 
+import com.herman.markdown_dsl.ElementContainerBuilder
 import com.herman.markdown_dsl.MarkdownElement
 
 /**
@@ -200,41 +201,32 @@ internal class BoldItalic(
     }
 }
 
-interface TextBuilder {
-    fun text(content: String)
+interface TextContainerBuilder : ElementContainerBuilder {
+    fun regular(content: String)
 
     fun bold(content: String, emphasisMarker: EmphasisMarker = EmphasisMarker.Asterisks)
 
     fun italic(content: String, emphasisMarker: EmphasisMarker = EmphasisMarker.Underscore)
-
-    fun boldItalic(content: String, emphasisMarker: EmphasisMarker = EmphasisMarker.Asterisks)
 }
 
-inline fun TextBuilder.text(
+inline fun TextContainerBuilder.regular(
     content: () -> String
 ) {
-    text(content())
+    regular(content())
 }
 
-inline fun TextBuilder.bold(
+inline fun TextContainerBuilder.bold(
     emphasisMarker: EmphasisMarker = EmphasisMarker.Asterisks,
     content: () -> String
 ) {
     bold(content(), emphasisMarker)
 }
 
-inline fun TextBuilder.italic(
+inline fun TextContainerBuilder.italic(
     emphasisMarker: EmphasisMarker = EmphasisMarker.Underscore,
     content: () -> String
 ) {
     italic(content(), emphasisMarker)
-}
-
-inline fun TextBuilder.boldItalic(
-    emphasisMarker: EmphasisMarker = EmphasisMarker.Asterisks,
-    content: () -> String
-) {
-    boldItalic(content(), emphasisMarker)
 }
 
 

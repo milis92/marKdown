@@ -1,6 +1,8 @@
 package com.herman.markdown_dsl.elements
 
+import com.herman.markdown_dsl.ElementContainerBuilder
 import com.herman.markdown_dsl.MarkdownBuilder
+import com.herman.markdown_dsl.MarkdownBuilderMarker
 import com.herman.markdown_dsl.MarkdownElement
 
 /**
@@ -63,12 +65,11 @@ import com.herman.markdown_dsl.MarkdownElement
  *
  * @param content Textual content of this element
  */
-internal class BlockQuote(
+class BlockQuote(
     private val content: String
 ) : MarkdownElement() {
 
     override fun toMarkdown(): String = buildString {
-        appendLine()
         content
             .removePrefix("\n")
             .removeSuffix("\n")
@@ -77,7 +78,7 @@ internal class BlockQuote(
                 // Append blockquote tag
                 append(">")
                 // Add space delimiter if content is not empty
-                if (content.isNotEmpty()) {
+                if (content.isNotBlank()) {
                     append(" ")
                     append(content)
                 }
@@ -87,8 +88,14 @@ internal class BlockQuote(
     }
 }
 
-inline fun MarkdownBuilder.blockQuote(
-    initialiser: MarkdownBuilder.() -> Unit
+interface BlockQuoteContainerBuilder : ElementContainerBuilder {
+    fun blockQuote(content: String) {
+        addToContainer(BlockQuote(content))
+    }
+}
+
+inline fun BlockQuoteContainerBuilder.blockQuote(
+    initialiser: @MarkdownBuilderMarker MarkdownBuilder.() -> Unit
 ) {
     val blockQuoteBuilder = MarkdownBuilder().apply(initialiser).build()
     blockQuote(blockQuoteBuilder.content)

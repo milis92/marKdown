@@ -1,6 +1,6 @@
 package com.herman.markdown_dsl.elements
 
-import com.herman.markdown_dsl.MarkdownBuilder
+import com.herman.markdown_dsl.ElementContainerBuilder
 import com.herman.markdown_dsl.MarkdownElement
 
 /**
@@ -145,29 +145,16 @@ internal class UnderlinedHeading(
         // For compatibility separate heading from previous content with a new line
         appendLine()
         // Append sanitised content
-        append(sanitiseContent(text))
+        val sanitisedContent = sanitiseContent(text)
+        append(sanitisedContent)
         // Separate content from tag
         appendLine()
         // Underline header
-        // -3: 2x new line and 1x space at the end of content
-        repeat(length - 3) {
+        // 2 new line and 1x space at the end of content
+        repeat(length - 2) {
             append(size.tag)
         }
     }
-}
-
-inline fun MarkdownBuilder.heading(
-    style: HeadingSizeMarker = HeadingSizeMarker.H1,
-    text: () -> String
-) {
-    heading(text(), style)
-}
-
-inline fun MarkdownBuilder.underlinedHeading(
-    style: UnderlinedHeadingStyle = UnderlinedHeadingStyle.H1,
-    text: () -> String
-) {
-    underlinedHeading(text(), style)
 }
 
 private fun sanitiseContent(
@@ -179,4 +166,40 @@ private fun sanitiseContent(
             append(" ")
         }
     }
+}.trim()
+
+@DslMarker
+@Target(AnnotationTarget.CLASS, AnnotationTarget.TYPE)
+annotation class HeadingBuilderMarker
+
+@HeadingBuilderMarker
+interface HeadingContainerBuilder : ElementContainerBuilder {
+    fun heading(
+        content: String,
+        style: HeadingSizeMarker = HeadingSizeMarker.H1
+    ) {
+        addToContainer(Heading(content, style))
+    }
+
+    fun underlinedHeading(
+        content: String,
+        style: UnderlinedHeadingStyle = UnderlinedHeadingStyle.H1
+    ) {
+        addToContainer(UnderlinedHeading(content, style))
+    }
 }
+
+inline fun HeadingContainerBuilder.heading(
+    style: HeadingSizeMarker = HeadingSizeMarker.H1,
+    text: () -> String
+) {
+    heading(text(), style)
+}
+
+inline fun HeadingContainerBuilder.underlinedHeading(
+    style: UnderlinedHeadingStyle = UnderlinedHeadingStyle.H1,
+    text: () -> String
+) {
+    underlinedHeading(text(), style)
+}
+

@@ -1,7 +1,8 @@
 package com.herman.markdown_dsl.elements
 
+import com.herman.markdown_dsl.ElementContainerBuilder
+import com.herman.markdown_dsl.MarkdownBuilder
 import com.herman.markdown_dsl.MarkdownElement
-
 
 enum class HorizontalRuleStyle(internal val tag: String) {
     Hyphen("-"),
@@ -75,3 +76,14 @@ internal class HorizontalRule(
         appendLine()
     }
 }
+
+interface HorizontalRuleContainerBuilder : ElementContainerBuilder {
+    fun horizontalRule(style: HorizontalRuleStyle = HorizontalRuleStyle.Hyphen) {
+        addToContainer(HorizontalRule(style))
+    }
+}
+
+@Suppress("EXTENSION_SHADOWED_BY_MEMBER")
+fun MarkdownBuilder.horizontalRule(
+    style: HorizontalRuleStyle = HorizontalRuleStyle.Hyphen
+) = horizontalRule(style)

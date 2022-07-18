@@ -8,42 +8,38 @@ import kotlin.test.assertEquals
 class HeadingTest {
 
     @Test
-    fun `when heading element is used than output heading is prefixed with correct tag`() {
+    fun `heading produces valid heading markdown`() {
         val actual = markdown {
-            heading { "Heading" }
+            heading("Heading")
         }.content
 
         @Language("markdown")
         val expected =
             """
-            |
-            |# Heading 
+            |# Heading
             """.trimMargin()
 
         assertEquals(expected, actual)
     }
 
     @Test
-    fun `when heading element is after other element then output heading is separated by a new line`() {
+    fun `underlined heading produces valid heading markdown`() {
         val actual = markdown {
-            heading { "Heading 1" }
-            heading { "Heading 2" }
+            underlinedHeading("Heading 1")
         }.content
 
         @Language("markdown")
         val expected =
             """
-            |
-            |# Heading 1 
-            |
-            |# Heading 2 
+            |Heading 1
+            |=========
             """.trimMargin()
 
         assertEquals(expected, actual)
     }
 
     @Test
-    fun `when heading element contains text with multiple lines then output heading is single line`() {
+    fun `heading with multiple lines produces markdown heading with a single line`() {
         val actual = markdown {
             heading {
                 """
@@ -59,84 +55,14 @@ class HeadingTest {
         @Language("markdown")
         val expected =
             """
-            |
-            |# Heading 1 Heading 2 Heading 3 
+            |# Heading 1 Heading 2 Heading 3
             """.trimMargin()
 
         assertEquals(expected, actual)
     }
 
     @Test
-    fun `when heading with custom style is used than markdown applies a proper tag`() {
-        val actual = markdown {
-            heading(HeadingSizeMarker.H1) { "Heading" }
-            heading(HeadingSizeMarker.H2) { "Heading" }
-            heading(HeadingSizeMarker.H3) { "Heading" }
-            heading(HeadingSizeMarker.H4) { "Heading" }
-            heading(HeadingSizeMarker.H5) { "Heading" }
-            heading(HeadingSizeMarker.H6) { "Heading" }
-        }.content
-
-        @Language("markdown")
-        val expected =
-            """
-            |
-            |# Heading 
-            |
-            |## Heading 
-            |
-            |### Heading 
-            |
-            |#### Heading 
-            |
-            |##### Heading 
-            |
-            |###### Heading 
-            """.trimMargin()
-
-        assertEquals(expected, actual)
-    }
-
-    @Test
-    fun `when underlinedHeading element is used than output heading is underlined with correct tag`() {
-        val actual = markdown {
-            underlinedHeading { "Heading" }
-        }.content
-
-        @Language("markdown")
-        val expected =
-            """
-            |
-            |Heading 
-            |=======
-            """.trimMargin()
-
-        assertEquals(expected, actual)
-    }
-
-    @Test
-    fun `when underlinedHeading element is after other element then output heading is separated by a new line`() {
-        val actual = markdown {
-            underlinedHeading { "Heading 1" }
-            underlinedHeading { "Heading 2" }
-        }.content
-
-        @Language("markdown")
-        val expected =
-            """
-            |
-            |Heading 1 
-            |=========
-            |
-            |Heading 2 
-            |=========
-            """.trimMargin()
-
-        assertEquals(expected, actual)
-    }
-
-    @Test
-    fun `when underlinedHeading element contains text with multiple lines then output heading is single line`() {
+    fun `underlined heading with multiple lines produces markdown heading with a single line`() {
         val actual = markdown {
             underlinedHeading {
                 """
@@ -152,8 +78,7 @@ class HeadingTest {
         @Language("markdown")
         val expected =
             """
-            |
-            |Heading 1 Heading 2 Heading 3 
+            |Heading 1 Heading 2 Heading 3
             |=============================
             """.trimMargin()
 
@@ -161,21 +86,76 @@ class HeadingTest {
     }
 
     @Test
-    fun `when underlinedHeading with custom style is used than markdown applies a proper tag`() {
+    fun `heading with custom style produces markdown heading with correct tag`() {
         val actual = markdown {
-            underlinedHeading(UnderlinedHeadingStyle.H1) { "Heading 1" }
-            underlinedHeading(UnderlinedHeadingStyle.H2) { "Heading 2" }
+            heading("Heading", HeadingSizeMarker.H1)
+            heading("Heading", HeadingSizeMarker.H2)
+            heading("Heading", HeadingSizeMarker.H3)
+            heading("Heading", HeadingSizeMarker.H4)
+            heading("Heading", HeadingSizeMarker.H5)
+            heading("Heading", HeadingSizeMarker.H6)
         }.content
 
         @Language("markdown")
         val expected =
             """
+            |# Heading
             |
-            |Heading 1 
-            |=========
+            |## Heading
             |
-            |Heading 2 
-            |---------
+            |### Heading
+            |
+            |#### Heading
+            |
+            |##### Heading
+            |
+            |###### Heading
+            """.trimMargin()
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `underlined with custom style produces markdown heading with correct tag`() {
+        val actual = markdown {
+            underlinedHeading("Heading", UnderlinedHeadingStyle.H1)
+            underlinedHeading("Heading", UnderlinedHeadingStyle.H2)
+        }.content
+
+        @Language("markdown")
+        val expected =
+            """
+            |Heading
+            |=======
+            |
+            |Heading
+            |-------
+            """.trimMargin()
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `all heading apis produce valid markdown heading`() {
+        val actual = markdown {
+            heading("Heading")
+            heading { "Heading" }
+            underlinedHeading("Heading")
+            underlinedHeading { "Heading" }
+        }.content
+
+        @Language("markdown")
+        val expected =
+            """
+            |# Heading
+            |
+            |# Heading
+            |
+            |Heading
+            |=======
+            |
+            |Heading
+            |=======
             """.trimMargin()
 
         assertEquals(expected, actual)

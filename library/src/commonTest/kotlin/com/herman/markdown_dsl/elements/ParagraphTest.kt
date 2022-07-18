@@ -9,191 +9,115 @@ import org.junit.jupiter.api.Assertions.*
 internal class ParagraphTest {
 
     @Test
-    fun `when text element is added than output text is a single line`() {
+    fun `paragraph with single line ends line with paragraph line break`() {
         val actual = markdown {
-            text { "text" }
+            paragraph("Line 1")
         }.content
 
         @Language("markdown")
         val expected =
             """
-            |text
+            |Line 1
             """.trimMargin()
 
         assertEquals(expected, actual)
     }
 
     @Test
-    fun `when multiple texts elements are added than output text is in multiple lines`() {
-        val actual = markdown {
-            text(content = "text")
-            bold { "bold" }
-            italic { "italic" }
-            boldItalic { "boldItalic" }
-        }.content
-
-        @Language("markdown")
-        val expected =
-            """
-            |text
-            |**bold**
-            |_italic_
-            |***boldItalic***
-            """.trimMargin()
-
-        assertEquals(expected, actual)
-    }
-
-    @Test
-    fun `when bold and italics are used than output is properly formatted`() {
-        val actual = markdown {
-            bold { "bold" }
-            italic { "italic" }
-            boldItalic { "boldItalic" }
-        }.content
-
-        @Language("markdown")
-        val expected =
-            """
-            |**bold**
-            |_italic_
-            |***boldItalic***
-            """.trimMargin()
-
-        assertEquals(expected, actual)
-    }
-
-    @Test
-    fun `when bold and italics are used in paragraph than output is properly formatted`() {
+    fun `paragraph with multiple lines ends every line with paragraph line break`() {
         val actual = markdown {
             paragraph {
-                bold { "bold" }
-                italic { "italic" }
-                boldItalic { "boldItalic" }
+                line("Line 1")
+                line("Line 2")
             }
         }.content
 
         @Language("markdown")
         val expected =
             """
-            |**bold**  
-            |_italic_  
-            |***boldItalic***  
-            |
+            |Line 1  
+            |Line 2
             """.trimMargin()
 
         assertEquals(expected, actual)
     }
 
     @Test
-    fun `when paragraph element with single text is added than output is valid paragraph`() {
+    fun `multiple paragraphs are separated by a blank line`() {
         val actual = markdown {
-            paragraph {
-                text { "text" }
-            }
+            paragraph("Paragraph 1")
+            paragraph("Paragraph 2")
         }.content
 
         @Language("markdown")
         val expected =
             """
-            |text  
+            |Paragraph 1  
             |
+            |Paragraph 2
             """.trimMargin()
 
         assertEquals(expected, actual)
     }
 
     @Test
-    fun `when paragraph element with multiple lines is added than output is a single paragraph with 2 lines`() {
+    fun `paragraph properly sanitises invalid content`() {
         val actual = markdown {
             paragraph {
-                text { "First sentence." }
-                text { "Second sentence." }
-            }
-        }.content
-
-        @Language("markdown")
-        val expected =
-            """
-            |First sentence.  
-            |Second sentence.  
-            |
-            """.trimMargin()
-
-        assertEquals(expected, actual)
-    }
-
-    @Test
-    fun `when multiple paragraphs elements are added than output is multiple valid paragraphs`() {
-        val actual = markdown {
-            paragraph {
-                text { "First paragraph" }
-            }
-            paragraph {
-                text { "Second paragraph" }
-            }
-        }.content
-
-        @Language("markdown")
-        val expected =
-            """
-            |First paragraph  
-            |
-            |Second paragraph  
-            |
-            """.trimMargin()
-
-        assertEquals(expected, actual)
-    }
-
-    @Test
-    fun `when multiple complex paragraphs are added than than output contains multiple paragraphs`() {
-        val actual = markdown {
-            paragraph {
-                text { "First line" }
-                text { "Second line" }
-            }
-            paragraph {
-                text { "Fourth line" }
-                text { "Fifth line" }
-            }
-        }.content
-
-        @Language("markdown")
-        val expected =
-            """
-            |First line  
-            |Second line  
-            |
-            |Fourth line  
-            |Fifth line  
-            |
-            """.trimMargin()
-
-        assertEquals(expected, actual)
-    }
-
-    @Test
-    fun `when paragraph with multiline text is added than output contains multiple paragraphs`() {
-        val actual = markdown {
-            paragraph {
-                text {
-                    """
-                                |First line.
-                                |Second line.
-                                """.trimMargin()
+                line {
+                    """|Line 1 ending with paragraph line break  
+                       |
+                   """.trimMargin()
                 }
-                text { "Third line." }
+                line {
+                    """|
+                       |Line 2 starts with new line
+                   """.trimMargin()
+                }
+                line {
+                    ""
+                }
             }
         }.content
 
         @Language("markdown")
         val expected =
             """
-            |First line.
-            |Second line.  
-            |Third line.  
+            |Line 1 ending with paragraph line break  
+            |Line 2 starts with new line
+            """.trimMargin()
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `all paragraph apis produce valid markdown paragraph`() {
+        val actual = markdown {
+            paragraph("Line 1")
+            paragraph(listOf("Line 1", "Line 2"))
+            paragraph {
+                line("Line 1")
+                line("Line 2")
+            }
+            paragraph {
+                line { "Line 3" }
+                line { "Line 3" }
+            }
+        }.content
+
+        @Language("markdown")
+        val expected =
+            """
+            |Line 1  
             |
+            |Line 1  
+            |Line 2  
+            |
+            |Line 1  
+            |Line 2  
+            |
+            |Line 3  
+            |Line 3
             """.trimMargin()
 
         assertEquals(expected, actual)
