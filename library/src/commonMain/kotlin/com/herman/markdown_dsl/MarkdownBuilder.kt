@@ -4,14 +4,13 @@ import com.herman.markdown_dsl.elements.BlockQuote
 import com.herman.markdown_dsl.elements.BlockQuoteContainerBuilder
 import com.herman.markdown_dsl.elements.Heading
 import com.herman.markdown_dsl.elements.HeadingContainerBuilder
-import com.herman.markdown_dsl.elements.HeadingSizeMarker
+import com.herman.markdown_dsl.elements.HeadingStyleMarker
 import com.herman.markdown_dsl.elements.HorizontalRule
 import com.herman.markdown_dsl.elements.HorizontalRuleContainerBuilder
 import com.herman.markdown_dsl.elements.HorizontalRuleStyle
 import com.herman.markdown_dsl.elements.ListContainerBuilder
-import com.herman.markdown_dsl.elements.ListMarker
+import com.herman.markdown_dsl.elements.ListStyleMarker
 import com.herman.markdown_dsl.elements.OrderedList
-import com.herman.markdown_dsl.elements.Paragraph
 import com.herman.markdown_dsl.elements.ParagraphContainerBuilder
 import com.herman.markdown_dsl.elements.UnderlinedHeading
 import com.herman.markdown_dsl.elements.UnderlinedHeadingStyle
@@ -35,7 +34,7 @@ open class MarkdownBuilder : ParagraphContainerBuilder,
 
     override fun heading(
         content: String,
-        style: HeadingSizeMarker
+        style: HeadingStyleMarker
     ) {
         addToContainer(Heading(content, style))
     }
@@ -63,7 +62,7 @@ open class MarkdownBuilder : ParagraphContainerBuilder,
         addToContainer(OrderedList(items))
     }
 
-    override fun unorderedList(items: List<String>, style: ListMarker) {
+    override fun unorderedList(items: List<String>, style: ListStyleMarker) {
         addToContainer(UnorderedList(items, style))
     }
 

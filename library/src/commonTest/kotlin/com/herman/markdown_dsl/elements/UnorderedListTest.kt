@@ -26,7 +26,7 @@ internal class UnorderedListTest {
             """
             |*  First item  
             |   Second line  
-            |   
+            |
             |*  Second item
             """.trimMargin()
 
@@ -58,7 +58,7 @@ internal class UnorderedListTest {
             |   Second line  
             |   *  First sub item
             |   *  Second sub item
-            |   
+            |
             |*  Second item
             """.trimMargin()
 

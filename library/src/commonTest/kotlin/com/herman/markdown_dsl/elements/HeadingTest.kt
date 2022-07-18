@@ -88,12 +88,12 @@ class HeadingTest {
     @Test
     fun `heading with custom style produces markdown heading with correct tag`() {
         val actual = markdown {
-            heading("Heading", HeadingSizeMarker.H1)
-            heading("Heading", HeadingSizeMarker.H2)
-            heading("Heading", HeadingSizeMarker.H3)
-            heading("Heading", HeadingSizeMarker.H4)
-            heading("Heading", HeadingSizeMarker.H5)
-            heading("Heading", HeadingSizeMarker.H6)
+            heading("Heading", HeadingStyleMarker.H1)
+            heading("Heading", HeadingStyleMarker.H2)
+            heading("Heading", HeadingStyleMarker.H3)
+            heading("Heading", HeadingStyleMarker.H4)
+            heading("Heading", HeadingStyleMarker.H5)
+            heading("Heading", HeadingStyleMarker.H6)
         }.content
 
         @Language("markdown")

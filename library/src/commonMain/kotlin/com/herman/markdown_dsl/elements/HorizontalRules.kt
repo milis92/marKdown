@@ -1,5 +1,6 @@
 package com.herman.markdown_dsl.elements
 
+import com.herman.markdown_dsl.ElementBuilder
 import com.herman.markdown_dsl.ElementContainerBuilder
 import com.herman.markdown_dsl.MarkdownBuilder
 import com.herman.markdown_dsl.MarkdownElement
@@ -13,8 +14,6 @@ enum class HorizontalRuleStyle(internal val tag: String) {
 /**
  * ## [Horizontal Rule](https://daringfireball.net/projects/markdown/syntax#hr)
  *
- * To ensure correctness and compatibility, every rule will be seperated
- * from previous and following content by a new line.
  *
  * <br></br>
  *
@@ -27,13 +26,8 @@ enum class HorizontalRuleStyle(internal val tag: String) {
  * ```
  * That will produce:
  *```
- *
  * ---
- *
  *```
- * _Note the blank lines before and after the rule_
- *
- * <br></br>
  *
  * By default, rule will be created with [hyphen tag][HorizontalRuleStyle.Hyphen].
  * If you want to use a different style, set a [style] to one of the values
@@ -47,20 +41,15 @@ enum class HorizontalRuleStyle(internal val tag: String) {
  * ```
  * Will produce:
  * ```
- *
  * ---
- *
  *
  * ***
  *
- *
  * ___
- *
  *```
  *
- * <br></br>
  *
- * @param style tag for this horisontal rule
+ * @param style tag for this horizontal rule
  */
 internal class HorizontalRule(
     private val style: HorizontalRuleStyle
@@ -77,6 +66,13 @@ internal class HorizontalRule(
     }
 }
 
+/**
+ * Marker interface for all [element builders][ElementBuilder]
+ * that should support [HorizontalRule] element as their nested elements.
+ *
+ * Implementations of this interface get all the idiomatic extensions registered
+ * to the context of [HorizontalRuleContainerBuilder].
+ */
 interface HorizontalRuleContainerBuilder : ElementContainerBuilder {
     fun horizontalRule(style: HorizontalRuleStyle = HorizontalRuleStyle.Hyphen) {
         addToContainer(HorizontalRule(style))

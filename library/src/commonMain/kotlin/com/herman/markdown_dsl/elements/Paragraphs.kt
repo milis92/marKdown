@@ -8,8 +8,11 @@ import kotlin.streams.toList
 /**
  * ## [Paragraph](https://daringfireball.net/projects/markdown/syntax#p)
  *
- * For correctness every item contained in this paragraph will be delimited with break tag (double space characters),
- * and will have a new empty line at the end.
+ * ### Constructs consecutive lines of text, seperated by Markdown line break
+ * (two empty characters + a new line)
+ *
+ * For correctness, paragraph will automatically sanitise inputs by striping all
+ * blank lines before and after the actual content.
  *
  * <br></br>
  *
@@ -18,26 +21,20 @@ import kotlin.streams.toList
  * ```
  * markdown {
  *     paragraph {
- *         text { "text" }
- *         bold { "bold" }
- *         italic { "italic" }
- *         boldItalic { "boldItalic" }
+ *         line { "First line" }
+ *         line { "Second line" }
  *     }
  * }
  * ```
  * That will produce:
  *```
- * text
- * **bold**
- * _italic_
- * ***boldItalic***
- *
+ * First line
+ * Second line
  *```
- * _Note the blank line after the paragraph_
  *
  * <br></br>
  *
- * @param content Textual content of this element
+ * @param content Raw, non-sanitised list of lines constructing this paragraph
  */
 class Paragraph(
     private val content: List<String>
@@ -89,12 +86,20 @@ class ParagraphBuilder : ElementBuilder<Paragraph> {
     }
 }
 
+/** Constructs a new paragraph line **/
 inline fun ParagraphBuilder.line(
     content: () -> String
 ) {
     line(content())
 }
 
+/**
+ * Marker interface for all [element builders][ElementBuilder]
+ * that should support [Paragraph] element.
+ *
+ * Implementations of this interface get all the idiomatic extensions registered
+ * to the context of [ParagraphContainerBuilder].
+ */
 @ParagraphBuilderMarker
 interface ParagraphContainerBuilder : ElementContainerBuilder {
     fun paragraph(lines: List<String>) {
@@ -102,6 +107,7 @@ interface ParagraphContainerBuilder : ElementContainerBuilder {
     }
 }
 
+/** Constructs a new paragraph that can have complex items **/
 inline fun ParagraphContainerBuilder.paragraph(
     initialiser: @ParagraphBuilderMarker ParagraphBuilder.() -> Unit
 ) {
@@ -109,6 +115,7 @@ inline fun ParagraphContainerBuilder.paragraph(
     addToContainer(paragraph)
 }
 
+/** Constructs a new simple paragraph that contains only single line of text **/
 fun ParagraphContainerBuilder.paragraph(content: String) {
     paragraph(listOf(content))
 }

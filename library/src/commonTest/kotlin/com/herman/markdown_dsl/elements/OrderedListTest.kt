@@ -140,4 +140,28 @@ internal class OrderedListTest {
 
         assertEquals(expected, actual)
     }
+
+    @Test
+    fun `ordered list`(){
+        val actual = markdown {
+            blockQuote {
+                orderedList {
+                    item("First item")
+                    item("Second item")
+                }
+                paragraph("Second sentence")
+            }
+        }.content
+
+        @Language("markdown")
+        val expected =
+            """
+            |> 1.  First item
+            |> 2.  Second item
+            |>
+            |> Second sentence
+            """.trimMargin()
+
+        assertEquals(expected, actual)
+    }
 }
