@@ -109,8 +109,7 @@ class UnorderedList(
                 append(content.prependIndent(indent))
                 replace(0, 1, style.tag)
             }
-            append(indentedContent)
-            appendLine()
+            appendLine(indentedContent.removeSuffix(indent))
         }
     }
 }
