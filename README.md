@@ -1,32 +1,81 @@
 <h1 align="center">
-  <p>Kotlin Gradle Library Template</p>
+  <p>Kotlin Markdown DSL</p>
 </h1>
 
-[![Use this template](https://img.shields.io/badge/-Use%20this%20template-brightgreen)](https://github.com/milis92/kotlin-library-template/generate) 
-![Language](https://img.shields.io/github/languages/top/milis92/kotlin-library-template?color=blue&logo=kotlin)
+<h3 align="center">
+  <p>Kotlin ❤️ Markdown</p>
+</h3>
 
-A simple template for Kotlin libraries built with Gradle
+A Kotlin DSL for effortless creation of beautiful Markdown pages,
+supporting both basic and extended syntax (Coming soon™️).
 
 ---
 
-## ✨ Features
+## ☁️ Setup
 
-- Gradle Kotlin DSL
-- Dependency versions managed via Gradle Versions Catalog (`libs.versions.toml`).
-- Kotlin's convention plugin with JVM Toolchain support.
-- CI/CD Setup with GitHub Actions.
-- Kotlin Static Analysis via `ktlint` and `detekt`.
-- Preconfigured publishing.
+> Coming soon
 
-## 🚧 Setup
-TBD
-## 🚀 Deployments
-TBD
-## 🤝 Contributing
+## 📝 Usage
 
-Feel free to open issues/prs for any bugs or improvements
+### Basic syntax
 
-## 📄 Licence
+> Basic implementation follows
+> [official Markdown syntax](https://daringfireball.net/projects/markdown/syntax)
+> and should be supported by almost all Markdown processors.  
+> For detailed guide and more usage examples refer to Wiki.
 
-This template is licensed under the MIT License - see the [License](LICENSE.txt) file for details.
-Please note that the generated template is offering to start with a MIT license, but you can change it to whatever you wish, as long as you attribute under the MIT terms that you're using the template.
+###### This readme page created with Kotlin DSL Markdown
+
+```kotlin
+val markdown = markdown {
+    //TODO Insert raw html content
+
+    paragraph {
+        line {
+            """
+            |A Kotlin DSL for effortless creation of beautiful Markdown pages, 
+            |supporting both basic and extended syntax (Coming soon™️).
+            """.trimMargin()
+        }
+    }
+
+    horizontalRule()
+
+    heading(HeadingStyleMarker.H2) { "☁️ Setup" }
+
+    blockQuote("Coming soon")
+
+    heading(HeadingStyleMarker.H2) { "\uD83D\uDCDD Usage" }
+
+    heading(HeadingStyleMarker.H3) { "Basic syntax" }
+
+    blockQuote {
+        paragraph {
+            //TODO Provide api to insert links and other in-line styles
+            line {
+                """
+                |Basic implementation follows 
+                |[official Markdown syntax](https://daringfireball.net/projects/markdown/syntax) 
+                |and should be supported by almost all Markdown processors.
+                """.trimMargin()
+            }
+            line { "For detailed guide and more usage examples refer to Wiki." }
+        }
+    }
+
+    heading(HeadingStyleMarker.H6) { "This readme page created with Kotlin DSL Markdown" }
+    //TODO Insert code block
+
+    heading(HeadingStyleMarker.H4) { "Exports" }
+
+    horizontalRule()
+
+    paragraph("This library is licensed under the Apache Version 2.0 License - see the [License](LICENSE.txt) file for details.")
+}
+```
+
+#### Exports
+
+---
+
+This library is licensed under the Apache Version 2.0 License - see the [License](LICENSE.txt) file for details.

@@ -82,10 +82,10 @@ open class MarkdownBuilder : ParagraphContainerBuilder,
     fun build(): Markdown {
         val content = buildString {
             elementsContainer.stream()
-                .map { it.toMarkdown() }
+                .map { it.toMarkdown().trim() }
                 .forEach { element ->
-                    append(element)
                     appendLine()
+                    appendLine(element)
                 }
         }.trim()
         return Markdown(content)

@@ -52,7 +52,7 @@ internal class ParagraphTest {
         @Language("markdown")
         val expected =
             """
-            |Paragraph 1  
+            |Paragraph 1
             |
             |Paragraph 2
             """.trimMargin()
@@ -108,13 +108,13 @@ internal class ParagraphTest {
         @Language("markdown")
         val expected =
             """
-            |Line 1  
+            |Line 1
             |
             |Line 1  
-            |Line 2  
+            |Line 2
             |
             |Line 1  
-            |Line 2  
+            |Line 2
             |
             |Line 3  
             |Line 3

@@ -58,11 +58,9 @@ internal class HorizontalRule(
     private val requiredNumberOfTags = 3
 
     override fun toMarkdown(): String = buildString {
-        appendLine()
         repeat(requiredNumberOfTags) {
             append(style.tag)
         }
-        appendLine()
     }
 }
 

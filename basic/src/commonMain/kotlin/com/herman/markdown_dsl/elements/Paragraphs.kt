@@ -8,8 +8,7 @@ import kotlin.streams.toList
 /**
  * ## [Paragraph](https://daringfireball.net/projects/markdown/syntax#p)
  *
- * ### Constructs consecutive lines of text, seperated by Markdown line break
- * (two empty characters + a new line)
+ * ### Constructs consecutive lines of text, seperated by Markdown line break (two empty characters + a new line)
  *
  * For correctness, paragraph will automatically sanitise inputs by striping all
  * blank lines before and after the actual content.

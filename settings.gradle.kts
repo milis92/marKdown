@@ -1,4 +1,4 @@
-rootProject.name = "markdown_dsl"
+rootProject.name = "kotlin_markdown"
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
@@ -45,4 +45,4 @@ gradleEnterprise {
     }
 }
 
-include("library")
+include("basic")

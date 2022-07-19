@@ -120,7 +120,7 @@ internal class BlockQuoteTest {
         val expected =
             """
             |> Line 1  
-            |> Line 2  
+            |> Line 2
             |>
             |> Line 1  
             |> Line 2
