@@ -9,7 +9,7 @@ import com.herman.markdown_dsl.ElementBuilder
 /**
  * ## [BlockQuote](https://daringfireball.net/projects/markdown/syntax#blockquote)
  *
- * ### Constructs the Markdown formatted blockquote from the provided content.
+ * ### Constructs the Markdown blockquote from the provided content.
  *
  * Blockquote will automatically sanitise inputs by striping all blank lines before and after the actual content
  *
@@ -69,11 +69,14 @@ internal class BlockQuote(
 }
 
 /**
- * Marker interface for all [element builders][ElementBuilder]
- * that should support [BlockQuote] as their nested element.
+ * Marker interface representing *parent* [element builders][ElementBuilder]
+ * that can have [BlockQuote] as their nested element.
  *
- * Implementations of this interface get all the idiomatic extensions registered
+ * Implementations of this interface get all the idiomatic builder extensions registered
  * to the context of [BlockQuoteContainerBuilder].
+ *
+ * Default implementation adds [BlockQuote] to the list of nested elements,
+ * which should be enough for most of the parents.
  */
 interface BlockQuoteContainerBuilder : ElementContainerBuilder {
     fun blockQuote(content: String) {

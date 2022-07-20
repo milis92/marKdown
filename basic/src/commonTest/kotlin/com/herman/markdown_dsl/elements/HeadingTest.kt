@@ -88,12 +88,12 @@ class HeadingTest {
     @Test
     fun `heading with custom style produces markdown heading with correct tag`() {
         val actual = markdown {
-            heading("Heading", HeadingStyleMarker.H1)
-            heading("Heading", HeadingStyleMarker.H2)
-            heading("Heading", HeadingStyleMarker.H3)
-            heading("Heading", HeadingStyleMarker.H4)
-            heading("Heading", HeadingStyleMarker.H5)
-            heading("Heading", HeadingStyleMarker.H6)
+            heading("Heading", HeadingTag.H1)
+            heading("Heading", HeadingTag.H2)
+            heading("Heading", HeadingTag.H3)
+            heading("Heading", HeadingTag.H4)
+            heading("Heading", HeadingTag.H5)
+            heading("Heading", HeadingTag.H6)
         }.content
 
         @Language("markdown")
@@ -118,8 +118,8 @@ class HeadingTest {
     @Test
     fun `underlined with custom style produces markdown heading with correct tag`() {
         val actual = markdown {
-            underlinedHeading("Heading", UnderlinedHeadingStyle.H1)
-            underlinedHeading("Heading", UnderlinedHeadingStyle.H2)
+            underlinedHeading("Heading", UnderlinedHeadingTag.H1)
+            underlinedHeading("Heading", UnderlinedHeadingTag.H2)
         }.content
 
         @Language("markdown")

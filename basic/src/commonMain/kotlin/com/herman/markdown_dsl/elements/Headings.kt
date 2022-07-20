@@ -5,7 +5,7 @@ import com.herman.markdown_dsl.ElementContainerBuilder
 import com.herman.markdown_dsl.MarkdownElement
 
 /**
- * ## ATX Header Style Marker
+ * ## ATX Header Tag
  *
  * Used for style configuration of [Heading] elements
  *
@@ -18,7 +18,7 @@ import com.herman.markdown_dsl.MarkdownElement
  * ##### [H5]
  * ###### [H6]
  */
-enum class HeadingStyleMarker(
+enum class HeadingTag(
     internal val tag: String
 ) {
     H1("#"), H2("##"), H3("###"), H4("####"), H5("#####"), H6("######")
@@ -46,8 +46,8 @@ enum class HeadingStyleMarker(
  * ```
  *
  * By default, heading will be created as an H1 heading.
- * If you need a heading of a different style, set a  heading [style] to
- * one of the values specified in [HeadingStyleMarker].
+ * If you need a heading of a different style, set a [tag] to
+ * one of the values specified in [HeadingTag].
  *
  * For example:
  * ```
@@ -62,16 +62,16 @@ enum class HeadingStyleMarker(
  *
  *
  * @param content Raw, non-sanitised content for this element
- * @param style Custom style for this heading, for options see [HeadingStyleMarker]
+ * @param tag Custom style for this heading, for options see [HeadingTag]
  */
 internal class Heading(
     private val content: String,
-    private val style: HeadingStyleMarker
+    private val tag: HeadingTag
 ) : MarkdownElement() {
 
     override fun toMarkdown(): String = buildString {
         // Append heading tags
-        append(style.tag)
+        append(tag.tag)
         // For compatibility separate heading tag from heading content
         append(" ")
         // Append sanitised content
@@ -79,7 +79,7 @@ internal class Heading(
     }
 }
 
-/** ## SetextHeader Style Marker
+/** ## SetextHeader Tag
  *
  * Used for style configuration of [UnderlinedHeading] elements
  *
@@ -95,7 +95,7 @@ internal class Heading(
  * --
  * ```
  */
-enum class UnderlinedHeadingStyle(
+enum class UnderlinedHeadingTag(
     internal val tag: String
 ) {
     H1("="),
@@ -125,8 +125,8 @@ enum class UnderlinedHeadingStyle(
  * ```
  *
  * By default, heading will be created with as an H1 heading.
- * If you need a heading of a different style set a heading [style] to one of the
- *  Markdown supported values, specified in [UnderlinedHeadingStyle].
+ * If you need a heading of a different style set a heading [tag] to one of the
+ *  Markdown supported values, specified in [UnderlinedHeadingTag].
  *
  * For example:
  * ```
@@ -141,11 +141,11 @@ enum class UnderlinedHeadingStyle(
  * ```
  *
  * @param content Raw, non-sanitised content for this element
- * @param style Custom style for this heading, for options see [UnderlinedHeadingStyle]
+ * @param tag Custom style for this heading, for options see [UnderlinedHeadingTag]
  */
 internal class UnderlinedHeading(
     private val content: String,
-    private val style: UnderlinedHeadingStyle
+    private val tag: UnderlinedHeadingTag
 ) : MarkdownElement() {
 
     override fun toMarkdown(): String = buildString {
@@ -157,7 +157,7 @@ internal class UnderlinedHeading(
         // Underline header
         // 2 new line and 1x space at the end of content
         repeat(length - 1) {
-            append(style.tag)
+            append(tag.tag)
         }
     }
 }
@@ -174,23 +174,26 @@ private fun sanitiseContent(
 }.trim()
 
 /**
- * Marker interface for all [element builders][ElementBuilder]
- * that should support [Heading] or [UnderlinedHeading] as their nested elements.
+ * Marker interface representing *parent* [element builders][ElementBuilder]
+ * that can have [Heading] or [UnderlinedHeading] as their nested elements.
  *
- * Implementations of this interface get all the idiomatic extensions registered
+ * Implementations of this interface get all the idiomatic builder extensions registered
  * to the context of [HeadingContainerBuilder].
+ *
+ * Default implementation adds [Heading] and [UnderlinedHeading] to the list of nested elements,
+ * which should be enough for most of the parents.
  */
 interface HeadingContainerBuilder : ElementContainerBuilder {
     fun heading(
         content: String,
-        style: HeadingStyleMarker = HeadingStyleMarker.H1
+        style: HeadingTag = HeadingTag.H1
     ) {
         addToContainer(Heading(content, style))
     }
 
     fun underlinedHeading(
         content: String,
-        style: UnderlinedHeadingStyle = UnderlinedHeadingStyle.H1
+        style: UnderlinedHeadingTag = UnderlinedHeadingTag.H1
     ) {
         addToContainer(UnderlinedHeading(content, style))
     }
@@ -198,17 +201,13 @@ interface HeadingContainerBuilder : ElementContainerBuilder {
 
 /** Constructs a new heading and adds it to the parent element **/
 inline fun HeadingContainerBuilder.heading(
-    style: HeadingStyleMarker = HeadingStyleMarker.H1,
+    style: HeadingTag = HeadingTag.H1,
     text: () -> String
-) {
-    heading(text(), style)
-}
+) = heading(text(), style)
 
 /** Constructs a new underlined heading and adds it to the parent element **/
 inline fun HeadingContainerBuilder.underlinedHeading(
-    style: UnderlinedHeadingStyle = UnderlinedHeadingStyle.H1,
+    style: UnderlinedHeadingTag = UnderlinedHeadingTag.H1,
     text: () -> String
-) {
-    underlinedHeading(text(), style)
-}
+) = underlinedHeading(text(), style)
 

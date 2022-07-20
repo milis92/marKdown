@@ -12,6 +12,7 @@ import kotlin.streams.toList
  *
  * For correctness, paragraph will automatically sanitise inputs by striping all
  * blank lines before and after the actual content.
+ *
  * _Note_ that paragraph always ends with a empty new line.
  *
  * <br></br>
@@ -60,6 +61,7 @@ class Paragraph(
 @Target(AnnotationTarget.CLASS, AnnotationTarget.TYPE)
 annotation class ParagraphBuilderMarker
 
+/** Builder for [Paragraph] **/
 class ParagraphBuilder : ElementBuilder<Paragraph>, TextLineContainerBuilder {
 
     private val elementsContainer = mutableListOf<MarkdownElement>()
@@ -78,11 +80,14 @@ class ParagraphBuilder : ElementBuilder<Paragraph>, TextLineContainerBuilder {
 }
 
 /**
- * Marker interface for all [element builders][ElementBuilder]
- * that should support [Paragraph] element.
+ * Marker interface representing *parent* [element builders][ElementBuilder]
+ * that want to have [Paragraph]s as their nested elements.
  *
  * Implementations of this interface get all the idiomatic extensions registered
  * to the context of [ParagraphContainerBuilder].
+ *
+ * Default implementation simply adds [Paragraph]s to the list of nested elements, which should be enough for
+ * most of the parent implementations.
  */
 @ParagraphBuilderMarker
 interface ParagraphContainerBuilder : ElementContainerBuilder {

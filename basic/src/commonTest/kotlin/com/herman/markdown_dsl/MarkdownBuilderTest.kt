@@ -1,6 +1,6 @@
 package com.herman.markdown_dsl
 
-import com.herman.markdown_dsl.elements.HeadingStyleMarker
+import com.herman.markdown_dsl.elements.HeadingTag
 import com.herman.markdown_dsl.elements.blockQuote
 import com.herman.markdown_dsl.elements.codeBlock
 import com.herman.markdown_dsl.elements.heading
@@ -27,13 +27,13 @@ internal class MarkdownBuilderTest {
 
             horizontalRule()
 
-            heading(HeadingStyleMarker.H2) { "☁️ Setup" }
+            heading(HeadingTag.H2) { "☁️ Setup" }
 
             blockQuote("Coming soon")
 
-            heading(HeadingStyleMarker.H2) { "\uD83D\uDCDD Usage" }
+            heading(HeadingTag.H2) { "\uD83D\uDCDD Usage" }
 
-            heading(HeadingStyleMarker.H3) { "Basic syntax" }
+            heading(HeadingTag.H3) { "Basic syntax" }
 
             blockQuote {
                 paragraph {
@@ -49,7 +49,7 @@ internal class MarkdownBuilderTest {
                 }
             }
 
-            heading(HeadingStyleMarker.H6) { "This readme page created with Kotlin DSL Markdown" }
+            heading(HeadingTag.H6) { "This readme page created with Kotlin DSL Markdown" }
 
             codeBlock {
                 @Language("kotlin")
@@ -107,7 +107,7 @@ internal class MarkdownBuilderTest {
                 block
             }
 
-            heading(HeadingStyleMarker.H4) { "Exports" }
+            heading(HeadingTag.H4) { "Exports" }
 
             horizontalRule()
 

@@ -6,7 +6,7 @@ import com.herman.markdown_dsl.MarkdownElement
 import kotlin.streams.toList
 
 /**
- * ## Unordered List Style Marker
+ * ## Unordered List Tag
  *
  * Used for style configuration of [UnorderedList] elements
  *
@@ -16,7 +16,7 @@ import kotlin.streams.toList
  * + [Plus]
  * - [Hyphen]
  */
-enum class ListStyleMarker(internal val tag: String) {
+enum class UnorderedListTag(internal val tag: String) {
     Asterisks("*"),
     Plus("+"),
     Hyphen("-")
@@ -77,9 +77,9 @@ enum class ListStyleMarker(internal val tag: String) {
  *    * Sub-Item 2
  * ```
  *
- * By default, list will be created using [asterisks][ListStyleMarker.Asterisks] tag.
- * If you want to use a different tag, set a  list [style] to one of the
- * Markdown supported values, specified in [ListStyleMarker].
+ * By default, list will be created using [asterisks][UnorderedListTag.Asterisks] tag.
+ * If you want to use a different tag, set a  list [tag] to one of the
+ * Markdown supported values, specified in [UnorderedListTag].
  *
  * For example:
  * ```
@@ -94,11 +94,11 @@ enum class ListStyleMarker(internal val tag: String) {
  *
  *
  * @param items list of Raw, non-sanitised items of this list
- * @param style Custom style for this list, for options see [ListStyleMarker]
+ * @param tag Custom style for this list, for options see [UnorderedListTag]
  */
 class UnorderedList(
     private val items: List<String>,
-    private val style: ListStyleMarker
+    private val tag: UnorderedListTag
 ) : MarkdownElement() {
 
     private val indent = "   "
@@ -106,7 +106,7 @@ class UnorderedList(
     override fun toMarkdown(): String = buildString {
         items.stream()
             .forEach { content ->
-                appendLine(indentContent(content, style.tag, indent))
+                appendLine(indentContent(content, tag.tag, indent))
             }
     }
 }
@@ -227,9 +227,7 @@ private fun indentContent(
  * ### Usage:
  * @see OrderedList
  * @see UnorderedList
- *
- * @suppress
- */
+ **/
 class ListItem(
     private val item: String
 ) : MarkdownElement() {
@@ -240,7 +238,7 @@ class ListItem(
 @Target(AnnotationTarget.CLASS, AnnotationTarget.TYPE)
 annotation class ListItemBuilderMarker
 
-/** @suppress **/
+/** Builder for [ListItem] **/
 class ListItemBuilder : ElementBuilder<ListItem>, TextLineContainerBuilder, ParagraphContainerBuilder,
     ListContainerBuilder,
     BlockQuoteContainerBuilder, HeadingContainerBuilder, CodeBlockContainerBuilder {
@@ -263,7 +261,6 @@ class ListItemBuilder : ElementBuilder<ListItem>, TextLineContainerBuilder, Para
     }
 }
 
-/** @suppress **/
 @ListItemBuilderMarker
 interface ListItemContainerBuilder : ElementContainerBuilder {
     fun item(content: String) {
@@ -283,6 +280,7 @@ inline fun ListItemContainerBuilder.item(
 @Target(AnnotationTarget.CLASS, AnnotationTarget.TYPE)
 annotation class ListBuilderMarker
 
+/** Builder for [OrderedList] **/
 class OrderedListBuilder : ElementBuilder<OrderedList>, ListItemContainerBuilder {
 
     private val elementsContainer: MutableList<MarkdownElement> = mutableListOf()
@@ -300,8 +298,9 @@ class OrderedListBuilder : ElementBuilder<OrderedList>, ListItemContainerBuilder
     }
 }
 
+/** Builder for [UnorderedList] **/
 class UnorderedListBuilder(
-    private val style: ListStyleMarker
+    private val style: UnorderedListTag
 ) : ElementBuilder<UnorderedList>, ListItemContainerBuilder {
 
     private val elementsContainer: MutableList<MarkdownElement> = mutableListOf()
@@ -320,23 +319,24 @@ class UnorderedListBuilder(
 }
 
 /**
- * Marker interface for all [element builders][ElementBuilder]
- * that should support [OrderedList] or [UnorderedList] as their nested elements.
+ * Marker interface representing *parent* [element builders][ElementBuilder]
+ * that can have [OrderedList] or [UnorderedList] as their nested elements.
  *
- * Implementations of this interface get all the idiomatic extensions registered
+ * Implementations of this interface get all the idiomatic builder extensions registered
  * to the context of [HeadingContainerBuilder].
+ *
+ * Default implementation adds [OrderedList] and [UnorderedList] to the list of nested elements,
+ * which should be enough for most of the parents.
  */
 @ListBuilderMarker
 interface ListContainerBuilder : ElementContainerBuilder {
-    fun orderedList(
-        items: List<String>
-    ) {
+    fun orderedList(items: List<String>) {
         addToContainer(OrderedList(items))
     }
 
     fun unorderedList(
         items: List<String>,
-        style: ListStyleMarker = ListStyleMarker.Asterisks
+        style: UnorderedListTag = UnorderedListTag.Asterisks
     ) {
         addToContainer(UnorderedList(items, style))
     }
@@ -352,7 +352,7 @@ inline fun ListContainerBuilder.orderedList(
 
 /** Constructs a new unordered list and adds it to the parent element **/
 inline fun ListContainerBuilder.unorderedList(
-    style: ListStyleMarker = ListStyleMarker.Asterisks,
+    style: UnorderedListTag = UnorderedListTag.Asterisks,
     initialiser: @ListBuilderMarker UnorderedListBuilder.() -> Unit
 ) {
     val markdownList = UnorderedListBuilder(style).apply(initialiser).build()

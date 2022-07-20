@@ -231,11 +231,14 @@ class TextLine(
 }
 
 /**
- * Marker interface for all [element builders][ElementBuilder]
+ * Marker interface representing *parent* [element builders][ElementBuilder]
  * that should support [TextLine] as their nested element.
  *
  * Implementations of this interface get all the idiomatic extensions registered
  * to the context of [BlockQuoteContainerBuilder].
+ *
+ * Default implementation simply adds [TextLine] to the list of nested elements, which should be enough for
+ * most of the parent implementations.
  */
 interface TextLineContainerBuilder : ElementContainerBuilder {
     fun line(content: String){
