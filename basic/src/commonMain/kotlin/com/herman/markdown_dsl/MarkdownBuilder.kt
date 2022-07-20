@@ -59,39 +59,28 @@ open class MarkdownBuilder : TextLineContainerBuilder, ParagraphContainerBuilder
         elementsContainer.add(element)
     }
 
-    override fun line(content: String) {
-        addToContainer(TextLine(content))
-    }
+    override fun line(content: String) = addToContainer(TextLine(content))
 
-    override fun heading(content: String, style: HeadingTag) {
-        addToContainer(Heading(content, style))
-    }
+    override fun heading(
+        content: String,
+        style: HeadingTag
+    ) = addToContainer(Heading(content, style))
 
     override fun underlinedHeading(
         content: String,
         style: UnderlinedHeadingTag
-    ) {
-        addToContainer(UnderlinedHeading(content, style))
-    }
+    ) = addToContainer(UnderlinedHeading(content, style))
 
-    override fun horizontalRule(style: HorizontalRuleTag) {
-        addToContainer(HorizontalRule(style))
-    }
+    override fun horizontalRule(style: HorizontalRuleTag) = addToContainer(HorizontalRule(style))
 
-    override fun blockQuote(content: String) {
-        addToContainer(BlockQuote(content))
-    }
+    override fun blockQuote(content: String) = addToContainer(BlockQuote(content))
 
-    override fun orderedList(items: List<String>) {
-        addToContainer(OrderedList(items))
-    }
+    override fun orderedList(items: List<String>) = addToContainer(OrderedList(items))
 
     override fun unorderedList(
         items: List<String>,
         style: UnorderedListTag
-    ) {
-        addToContainer(UnorderedList(items, style))
-    }
+    ) = addToContainer(UnorderedList(items, style))
 
     /**
      * @suppress

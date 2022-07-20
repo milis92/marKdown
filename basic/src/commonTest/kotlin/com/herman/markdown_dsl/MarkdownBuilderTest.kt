@@ -7,10 +7,12 @@ import com.herman.markdown_dsl.elements.heading
 import com.herman.markdown_dsl.elements.line
 import com.herman.markdown_dsl.elements.paragraph
 import org.intellij.lang.annotations.Language
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.io.File
 import kotlin.test.assertEquals
 
+@Disabled("TODO - Raw html and links are not supported yet")
 internal class MarkdownBuilderTest {
 
     @Test
