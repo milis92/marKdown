@@ -1,5 +1,6 @@
 package com.herman.markdown_dsl.elements
 
+import com.herman.markdown_dsl.ElementContainerBuilder
 import com.herman.markdown_dsl.MarkdownElement
 
 class CodeBlock(
@@ -9,11 +10,19 @@ class CodeBlock(
     private val indent = "    "
 
     override fun toMarkdown(): String = buildString {
-        content.trim().lines().forEach { content ->
-            val indentedContent = buildString {
-                append(content.prependIndent(indent))
-            }
-            appendLine(indentedContent.removeSuffix(indent))
-        }
+        println(content.prependIndent(indent))
+        appendLine(content.prependIndent(indent))
     }
+}
+
+interface CodeBlockContainerBuilder : ElementContainerBuilder {
+    fun codeBlock(content: String) {
+        addToContainer(CodeBlock(content))
+    }
+}
+
+inline fun CodeBlockContainerBuilder.codeBlock(
+    content: () -> String
+) {
+    codeBlock(content())
 }

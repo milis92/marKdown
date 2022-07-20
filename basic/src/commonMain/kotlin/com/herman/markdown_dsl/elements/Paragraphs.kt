@@ -12,6 +12,7 @@ import kotlin.streams.toList
  *
  * For correctness, paragraph will automatically sanitise inputs by striping all
  * blank lines before and after the actual content.
+ * _Note_ that paragraph always ends with a empty new line.
  *
  * <br></br>
  *

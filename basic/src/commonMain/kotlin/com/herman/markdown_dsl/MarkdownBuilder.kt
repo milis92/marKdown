@@ -2,6 +2,7 @@ package com.herman.markdown_dsl
 
 import com.herman.markdown_dsl.elements.BlockQuote
 import com.herman.markdown_dsl.elements.BlockQuoteContainerBuilder
+import com.herman.markdown_dsl.elements.CodeBlockContainerBuilder
 import com.herman.markdown_dsl.elements.Heading
 import com.herman.markdown_dsl.elements.HeadingContainerBuilder
 import com.herman.markdown_dsl.elements.HeadingStyleMarker
@@ -24,7 +25,7 @@ data class Markdown(val content: String) {
 
 @MarkdownBuilderMarker
 open class MarkdownBuilder : TextLineContainerBuilder, ParagraphContainerBuilder,
-    ListContainerBuilder, BlockQuoteContainerBuilder, HeadingContainerBuilder, HorizontalRuleContainerBuilder {
+    ListContainerBuilder, BlockQuoteContainerBuilder, HeadingContainerBuilder, HorizontalRuleContainerBuilder, CodeBlockContainerBuilder {
 
     private val elementsContainer: MutableList<MarkdownElement> = mutableListOf()
 
@@ -90,7 +91,7 @@ open class MarkdownBuilder : TextLineContainerBuilder, ParagraphContainerBuilder
     fun build(): Markdown {
         val content = buildString {
             elementsContainer.stream()
-                .map { it.toMarkdown().trim() }
+                .map { it.toMarkdown().trimEnd() }
                 .forEach { element ->
                     appendLine()
                     appendLine(element)

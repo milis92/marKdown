@@ -70,8 +70,6 @@ internal class Heading(
 ) : MarkdownElement() {
 
     override fun toMarkdown(): String = buildString {
-        // For compatibility separate heading from previous content with a new line
-        appendLine()
         // Append heading tags
         append(style.tag)
         // For compatibility separate heading tag from heading content
@@ -151,8 +149,6 @@ internal class UnderlinedHeading(
 ) : MarkdownElement() {
 
     override fun toMarkdown(): String = buildString {
-        // For compatibility separate heading from previous content with a new line
-        appendLine()
         // Append sanitised content
         val sanitisedContent = sanitiseContent(content)
         append(sanitisedContent)
@@ -160,7 +156,7 @@ internal class UnderlinedHeading(
         appendLine()
         // Underline header
         // 2 new line and 1x space at the end of content
-        repeat(length - 2) {
+        repeat(length - 1) {
             append(style.tag)
         }
     }
