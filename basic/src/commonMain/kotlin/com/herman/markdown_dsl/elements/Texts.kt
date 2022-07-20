@@ -1,5 +1,6 @@
 package com.herman.markdown_dsl.elements
 
+import com.herman.markdown_dsl.ElementBuilder
 import com.herman.markdown_dsl.ElementContainerBuilder
 import com.herman.markdown_dsl.MarkdownElement
 
@@ -201,33 +202,55 @@ internal class BoldItalic(
     }
 }
 
-interface TextContainerBuilder : ElementContainerBuilder {
-    fun regular(content: String)
-
-    fun bold(content: String, emphasisMarker: EmphasisMarker = EmphasisMarker.Asterisks)
-
-    fun italic(content: String, emphasisMarker: EmphasisMarker = EmphasisMarker.Underscore)
+/**
+ * ## Text Line
+ *
+ * Simple line of text
+ *
+ * <br></br>
+ *
+ * ### Usage:
+ *
+ * ```
+ * markdown {
+ *     line("text")
+ * }
+ * ```
+ * That will produce:
+ *
+ * text
+ *
+ * <br></br>
+ *
+ * @param content Raw content of this element
+ */
+class TextLine(
+    private val content: String
+) : MarkdownElement() {
+    override fun toMarkdown(): String = buildString { appendLine(content) }
 }
 
-inline fun TextContainerBuilder.regular(
+/**
+ * Marker interface for all [element builders][ElementBuilder]
+ * that should support [TextLine] as their nested element.
+ *
+ * Implementations of this interface get all the idiomatic extensions registered
+ * to the context of [BlockQuoteContainerBuilder].
+ */
+interface TextLineContainerBuilder : ElementContainerBuilder {
+    fun line(content: String){
+        addToContainer(TextLine(content))
+    }
+}
+
+/** Constructs a new simple text line **/
+inline fun TextLineContainerBuilder.line(
     content: () -> String
 ) {
-    regular(content())
+    line(content())
 }
 
-inline fun TextContainerBuilder.bold(
-    emphasisMarker: EmphasisMarker = EmphasisMarker.Asterisks,
-    content: () -> String
-) {
-    bold(content(), emphasisMarker)
-}
 
-inline fun TextContainerBuilder.italic(
-    emphasisMarker: EmphasisMarker = EmphasisMarker.Underscore,
-    content: () -> String
-) {
-    italic(content(), emphasisMarker)
-}
 
 
 

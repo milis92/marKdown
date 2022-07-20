@@ -8,10 +8,12 @@ import com.herman.markdown_dsl.elements.HeadingStyleMarker
 import com.herman.markdown_dsl.elements.HorizontalRule
 import com.herman.markdown_dsl.elements.HorizontalRuleContainerBuilder
 import com.herman.markdown_dsl.elements.HorizontalRuleStyle
+import com.herman.markdown_dsl.elements.TextLine
 import com.herman.markdown_dsl.elements.ListContainerBuilder
 import com.herman.markdown_dsl.elements.ListStyleMarker
 import com.herman.markdown_dsl.elements.OrderedList
 import com.herman.markdown_dsl.elements.ParagraphContainerBuilder
+import com.herman.markdown_dsl.elements.TextLineContainerBuilder
 import com.herman.markdown_dsl.elements.UnderlinedHeading
 import com.herman.markdown_dsl.elements.UnderlinedHeadingStyle
 import com.herman.markdown_dsl.elements.UnorderedList
@@ -21,7 +23,7 @@ data class Markdown(val content: String) {
 }
 
 @MarkdownBuilderMarker
-open class MarkdownBuilder : ParagraphContainerBuilder,
+open class MarkdownBuilder : TextLineContainerBuilder, ParagraphContainerBuilder,
     ListContainerBuilder, BlockQuoteContainerBuilder, HeadingContainerBuilder, HorizontalRuleContainerBuilder {
 
     private val elementsContainer: MutableList<MarkdownElement> = mutableListOf()
@@ -30,6 +32,12 @@ open class MarkdownBuilder : ParagraphContainerBuilder,
         element: MarkdownElement
     ) {
         elementsContainer.add(element)
+    }
+
+    override fun line(
+        content: String
+    ) {
+        addToContainer(TextLine(content))
     }
 
     override fun heading(

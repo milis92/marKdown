@@ -134,10 +134,10 @@ internal class BlockQuoteTest {
         val actual = markdown {
             blockQuote {
                 blockQuote {
-                    paragraph("Line 1")
+                    line("Line 1")
                 }
                 blockQuote {
-                    paragraph("Line 2")
+                    line("Line 2")
                 }
             }
         }.content

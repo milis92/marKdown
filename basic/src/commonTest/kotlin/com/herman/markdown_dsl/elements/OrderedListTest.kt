@@ -64,7 +64,7 @@ internal class OrderedListTest {
         val actual = markdown {
             orderedList {
                 item {
-                    paragraph("First item")
+                    line("First item")
                     orderedList {
                         item("First sub item")
                         item("Second sub item")
@@ -77,7 +77,7 @@ internal class OrderedListTest {
         @Language("markdown")
         val expected =
             """
-            |1.  First item  
+            |1.  First item
             |    1.  First sub item
             |    2.  Second sub item
             |
@@ -125,7 +125,7 @@ internal class OrderedListTest {
                     item("First item")
                     item("Second item")
                 }
-                paragraph("Second sentence")
+                line("Second sentence")
             }
         }.content
 
@@ -149,7 +149,7 @@ internal class OrderedListTest {
                     item("First item")
                     item("Second item")
                 }
-                paragraph("Second sentence")
+                line("Second sentence")
             }
         }.content
 

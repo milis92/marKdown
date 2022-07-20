@@ -16,12 +16,11 @@ internal class MarkdownBuilderTest {
         val markdown = markdown {
             //TODO Insert raw html content
 
-            paragraph {
-                line {
-                    """|A Kotlin DSL for effortless creation of beautiful Markdown pages, 
-                       |supporting both basic and extended syntax (Coming soon™️).
-                    """.trimMargin()
-                }
+            line {
+                """
+                |A Kotlin DSL for effortless creation of beautiful Markdown pages,
+                |supporting both basic and extended syntax (Coming soon™️).
+                """.trimMargin()
             }
 
             horizontalRule()
@@ -36,26 +35,31 @@ internal class MarkdownBuilderTest {
 
             blockQuote {
                 paragraph {
-                    //TODO Provide api to insert links and other in-line styles
                     line {
                         """
-                        |Basic implementation follows 
+                        |Basic implementation follows
                         |[official Markdown syntax](https://daringfireball.net/projects/markdown/syntax) 
                         |and should be supported by almost all Markdown processors.
                         """.trimMargin()
                     }
+                    //TODO Provide api to insert links and other in-line styles
                     line { "For detailed guide and more usage examples refer to Wiki." }
                 }
             }
 
-            heading(HeadingStyleMarker.H4) { "This readme page created with Kotlin DSL Markdown" }
+            heading(HeadingStyleMarker.H6) { "This readme page created with Kotlin DSL Markdown" }
             //TODO Insert code block
 
             heading(HeadingStyleMarker.H4) { "Exports" }
 
             horizontalRule()
 
-            paragraph("This library is licensed under the Apache Version 2.0 License - see the [License](LICENSE.txt) file for details.")
+            line {
+                """
+                |This library is licensed under the Apache Version 2.0 License -
+                |see the [License](LICENSE.txt) file for details.
+                """.trimMargin()
+            }
         }
 
         val readme = File("../README.md").readText()

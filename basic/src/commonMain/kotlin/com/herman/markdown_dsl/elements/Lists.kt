@@ -235,7 +235,8 @@ class ListItem(
 annotation class ListItemBuilderMarker
 
 /** @suppress **/
-class ListItemBuilder : ElementBuilder<ListItem>, ParagraphContainerBuilder, ListContainerBuilder,
+class ListItemBuilder : ElementBuilder<ListItem>, TextLineContainerBuilder, ParagraphContainerBuilder,
+    ListContainerBuilder,
     BlockQuoteContainerBuilder, HeadingContainerBuilder {
 
     private val elementsContainer: MutableList<MarkdownElement> = mutableListOf()

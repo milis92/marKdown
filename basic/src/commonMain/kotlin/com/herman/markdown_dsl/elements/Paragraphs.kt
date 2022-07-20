@@ -52,28 +52,16 @@ class Paragraph(
     }
 }
 
-private class Line(
-    private val content: String
-) : MarkdownElement() {
-    override fun toMarkdown(): String = content
-}
-
 @DslMarker
 @Target(AnnotationTarget.CLASS, AnnotationTarget.TYPE)
 annotation class ParagraphBuilderMarker
 
-class ParagraphBuilder : ElementBuilder<Paragraph> {
+class ParagraphBuilder : ElementBuilder<Paragraph>, TextLineContainerBuilder {
 
     private val elementsContainer = mutableListOf<MarkdownElement>()
 
-    private fun addToContainer(element: MarkdownElement) {
+    override fun addToContainer(element: MarkdownElement) {
         elementsContainer.add(element)
-    }
-
-    fun line(
-        content: String
-    ) {
-        addToContainer(Line(content))
     }
 
     override fun build(): Paragraph {
@@ -83,13 +71,6 @@ class ParagraphBuilder : ElementBuilder<Paragraph> {
             .toList()
         return Paragraph(content)
     }
-}
-
-/** Constructs a new paragraph line **/
-inline fun ParagraphBuilder.line(
-    content: () -> String
-) {
-    line(content())
 }
 
 /**
@@ -112,9 +93,4 @@ inline fun ParagraphContainerBuilder.paragraph(
 ) {
     val paragraph = ParagraphBuilder().apply(initialiser).build()
     addToContainer(paragraph)
-}
-
-/** Constructs a new simple paragraph that contains only single line of text **/
-fun ParagraphContainerBuilder.paragraph(content: String) {
-    paragraph(listOf(content))
 }

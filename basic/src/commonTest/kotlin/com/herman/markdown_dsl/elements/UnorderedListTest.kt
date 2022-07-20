@@ -73,7 +73,7 @@ internal class UnorderedListTest {
                     item("First item")
                     item("Second item")
                 }
-                paragraph("Second sentence")
+                line("Second sentence")
             }
         }.content
 
