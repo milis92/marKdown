@@ -39,16 +39,19 @@ class Paragraph(
     private val content: List<String>
 ) : MarkdownElement() {
 
-    private val lineBreak = "  "
+    private val lineBreak = "  \n"
 
     override fun toMarkdown(): String = buildString {
-        content.stream()
-            .map { it.trim() }
-            .forEach { line ->
-                if(line.isNotBlank()){
-                    appendLine(line + lineBreak)
+        val sanitisedContent = buildString {
+            content.stream()
+                .map { it.trim() }
+                .filter { it.isNotBlank() }
+                .forEach { line ->
+                    append(line + lineBreak)
                 }
-            }
+        }.removeSuffix(lineBreak)
+
+        appendLine(sanitisedContent)
     }
 }
 

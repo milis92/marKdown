@@ -9,6 +9,23 @@ import org.junit.jupiter.api.Assertions.*
 internal class ParagraphTest {
 
     @Test
+    fun `paragraph with single line doesnt end with paragraph line break`() {
+        val actual = markdown {
+            paragraph {
+                line("Line 1")
+            }
+        }.content
+
+        @Language("markdown")
+        val expected =
+            """
+            |Line 1
+            """.trimMargin()
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
     fun `paragraph with multiple lines ends every line with paragraph line break`() {
         val actual = markdown {
             paragraph {
@@ -60,9 +77,56 @@ internal class ParagraphTest {
     }
 
     @Test
+    fun `multiple paragraphs are separated by a blank line`() {
+        val actual = markdown {
+            paragraph {
+                line("Line 1")
+                line("Line 2")
+            }
+            paragraph {
+                line("Line 5")
+                line("Line 6")
+            }
+        }.content
+
+        @Language("markdown")
+        val expected =
+            """
+            |Line 1  
+            |Line 2
+            |
+            |Line 5  
+            |Line 6
+            """.trimMargin()
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `multiple single line paragraphs are separated by a blank line`() {
+        val actual = markdown {
+            paragraph {
+                line("Line 1")
+            }
+            paragraph {
+                line("Line 3")
+            }
+        }.content
+
+        @Language("markdown")
+        val expected =
+            """
+            |Line 1
+            |
+            |Line 3
+            """.trimMargin()
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
     fun `all paragraph apis produce valid markdown paragraph`() {
         val actual = markdown {
-            line("Line 1")
             paragraph(listOf("Line 1", "Line 2"))
             paragraph {
                 line("Line 1")
@@ -77,8 +141,6 @@ internal class ParagraphTest {
         @Language("markdown")
         val expected =
             """
-            |Line 1
-            |
             |Line 1  
             |Line 2
             |

@@ -8,6 +8,25 @@ import org.junit.jupiter.api.Test
 internal class UnorderedListTest {
 
     @Test
+    fun `list with multiple items produces valid markdown unordered list`() {
+        val actual = markdown {
+            unorderedList {
+                item("First item")
+                item("Second item")
+            }
+        }.content
+
+        @Language("markdown")
+        val expected =
+            """
+            |*  First item
+            |*  Second item
+            """.trimMargin()
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
     fun `unordered list with paragraph indents paragraphs properly`() {
         val actual = markdown {
             unorderedList {
@@ -25,7 +44,36 @@ internal class UnorderedListTest {
         val expected =
             """
             |*  First item  
-            |   Second line  
+            |   Second line
+            |
+            |*  Second item
+            """.trimMargin()
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `unordered list with multiple paragraphs indents paragraphs properly`() {
+        val actual = markdown {
+            unorderedList {
+                item {
+                    paragraph {
+                        line { "First paragraph" }
+                    }
+                    paragraph {
+                        line { "Second paragraph" }
+                    }
+                }
+                item("Second item")
+            }
+        }.content
+
+        @Language("markdown")
+        val expected =
+            """
+            |*  First paragraph
+            |
+            |   Second paragraph
             |
             |*  Second item
             """.trimMargin()
@@ -38,9 +86,34 @@ internal class UnorderedListTest {
         val actual = markdown {
             unorderedList {
                 item {
+                    unorderedList {
+                        item("First sub item")
+                        item("Second sub item")
+                    }
+                }
+                item("Second item")
+            }
+        }.content
+
+        @Language("markdown")
+        val expected =
+            """
+            |*  *  First sub item
+            |   *  Second sub item
+            |
+            |*  Second item
+            """.trimMargin()
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `unordered list with a paragraph with unordered sublist indents sublist properly`() {
+        val actual = markdown {
+            unorderedList {
+                item {
                     paragraph {
                         line("First item")
-                        line("Second line")
                     }
                     unorderedList {
                         item("First sub item")
@@ -54,8 +127,8 @@ internal class UnorderedListTest {
         @Language("markdown")
         val expected =
             """
-            |*  First item  
-            |   Second line  
+            |*  First item
+            |
             |   *  First sub item
             |   *  Second sub item
             |

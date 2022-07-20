@@ -34,6 +34,35 @@ internal class OrderedListTest {
     }
 
     @Test
+    fun `ordered list with multiple paragraphs indents paragraphs properly`() {
+        val actual = markdown {
+            orderedList {
+                item {
+                    paragraph {
+                        line { "First paragraph" }
+                    }
+                    paragraph {
+                        line { "Second paragraph" }
+                    }
+                }
+                item("Second item")
+            }
+        }.content
+
+        @Language("markdown")
+        val expected =
+            """
+            |1.  First paragraph
+            |
+            |    Second paragraph
+            |
+            |2.  Second item
+            """.trimMargin()
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
     fun `ordered list with paragraph indents paragraphs properly`() {
         val actual = markdown {
             orderedList {
@@ -51,7 +80,7 @@ internal class OrderedListTest {
         val expected =
             """
             |1.  First item  
-            |    Second line  
+            |    Second line
             |
             |2.  Second item
             """.trimMargin()
@@ -92,9 +121,7 @@ internal class OrderedListTest {
         val actual = markdown {
             orderedList {
                 item {
-                    paragraph {
-                        line { "First item" }
-                    }
+                    line { "First item" }
                     unorderedList {
                         item("First sub item")
                         item("Second sub item")
@@ -107,7 +134,7 @@ internal class OrderedListTest {
         @Language("markdown")
         val expected =
             """
-            |1.  First item  
+            |1.  First item
             |    *  First sub item
             |    *  Second sub item
             |
@@ -142,7 +169,7 @@ internal class OrderedListTest {
     }
 
     @Test
-    fun `ordered list`(){
+    fun `blockquote with ordered list indents items properly`(){
         val actual = markdown {
             blockQuote {
                 orderedList {

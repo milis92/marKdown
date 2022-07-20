@@ -38,7 +38,7 @@ internal class MarkdownBuilderTest {
                     line {
                         """
                         |Basic implementation follows
-                        |[official Markdown syntax](https://daringfireball.net/projects/markdown/syntax) 
+                        |[official Markdown syntax](https://daringfireball.net/projects/markdown/syntax)
                         |and should be supported by almost all Markdown processors.
                         """.trimMargin()
                     }

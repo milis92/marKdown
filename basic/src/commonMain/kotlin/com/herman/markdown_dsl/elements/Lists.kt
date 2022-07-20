@@ -104,13 +104,10 @@ class UnorderedList(
     private val indent = "   "
 
     override fun toMarkdown(): String = buildString {
-        items.forEach { content ->
-            val indentedContent = buildString {
-                append(content.prependIndent(indent))
-                replace(0, 1, style.tag)
+        items.stream()
+            .forEach { content ->
+                appendLine(indentContent(content, style.tag, indent))
             }
-            appendLine(indentedContent.removeSuffix(indent))
-        }
     }
 }
 
@@ -185,31 +182,40 @@ class OrderedList(
     private val indent = "  "
 
     override fun toMarkdown(): String = buildString {
-        items
-            .map { it.removePrefix("\n") }
-            .forEachIndexed { index, content ->
-                val stringIndex = "${index + 1}."
-                // Indent that takes index length into account, so we can offset paragraphs that are on 9+ position
-                val indexedIndent = " ".repeat(stringIndex.length) + indent
+        items.forEachIndexed { index, content ->
+            val stringIndex = "${index + 1}."
+            // Indent that takes index length into account, so we can offset paragraphs that are on 9+ position
+            val indexedIndent = " ".repeat(stringIndex.length) + indent
 
-                /*
-                 Indented content that should look like
-                 1.  Line 1
-                     Line 2
-                 10.  Line 1
-                      Line 2
-                 100.  Line 1
-                       Line 2
-                 */
-                val indentedContent = buildString {
-                    append(content.prependIndent(indexedIndent))
-                    replace(0, stringIndex.length, stringIndex)
-                }.removeSuffix(indexedIndent)
-
-                appendLine(indentedContent)
-            }
+            /*
+             Indented content that should look like
+             1.  Line 1
+                 Line 2
+             10.  Line 1
+                  Line 2
+             100.  Line 1
+                   Line 2
+             */
+            appendLine(indentContent(content, stringIndex, indexedIndent))
+        }
     }
 }
+
+private fun indentContent(
+    originalContent: String,
+    index: String,
+    indent: String
+) = buildString {
+    originalContent.lineSequence()
+        .forEach { content ->
+            if (content.isNotBlank()) {
+                appendLine(content.prependIndent(indent))
+            } else {
+                appendLine()
+            }
+        }
+    replace(0, index.length, index)
+}.removeSuffix("\n")
 
 /**
  * ## ListItem
@@ -227,7 +233,7 @@ class OrderedList(
 class ListItem(
     private val item: String
 ) : MarkdownElement() {
-    override fun toMarkdown(): String = item
+    override fun toMarkdown(): String = item.removeSuffix("\n")
 }
 
 @DslMarker
@@ -250,7 +256,7 @@ class ListItemBuilder : ElementBuilder<ListItem>, TextLineContainerBuilder, Para
             elementsContainer.stream()
                 .map { it.toMarkdown() }
                 .forEach { element ->
-                    append(element)
+                    appendLine(element)
                 }
         }
         return ListItem(content)
@@ -322,11 +328,16 @@ class UnorderedListBuilder(
  */
 @ListBuilderMarker
 interface ListContainerBuilder : ElementContainerBuilder {
-    fun orderedList(items: List<String>) {
+    fun orderedList(
+        items: List<String>
+    ) {
         addToContainer(OrderedList(items))
     }
 
-    fun unorderedList(items: List<String>, style: ListStyleMarker = ListStyleMarker.Asterisks) {
+    fun unorderedList(
+        items: List<String>,
+        style: ListStyleMarker = ListStyleMarker.Asterisks
+    ) {
         addToContainer(UnorderedList(items, style))
     }
 }

@@ -227,7 +227,7 @@ internal class BoldItalic(
 class TextLine(
     private val content: String
 ) : MarkdownElement() {
-    override fun toMarkdown(): String = buildString { appendLine(content) }
+    override fun toMarkdown(): String = content.trim()
 }
 
 /**

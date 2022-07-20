@@ -54,17 +54,17 @@ internal class BlockQuote(
 ) : MarkdownElement() {
 
     override fun toMarkdown(): String = buildString {
-        content.trim().lineSequence().forEach { content ->
-            // Append blockquote tag
-            append(">")
-            // Add space delimiter if content is not empty
-            if (content.isNotBlank()) {
-                append(" ")
-                append(content)
+        content.lineSequence()
+            .forEach { content ->
+                // Append blockquote tag
+                append(">")
+                // Add space delimiter if content is not empty
+                if (content.isNotBlank()) {
+                    append(" $content")
+                }
+                // Finish off with a new line
+                appendLine()
             }
-            // Finish off with a new line
-            appendLine()
-        }
     }
 }
 
