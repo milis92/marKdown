@@ -27,6 +27,8 @@ internal class MarkdownBuilderTest {
                 """.trimMargin()
             }
 
+            "An example of" + italic("Inlined italic") + " text"
+
             horizontalRule()
 
             heading(HeadingTag.H2) { "☁️ Setup" }
