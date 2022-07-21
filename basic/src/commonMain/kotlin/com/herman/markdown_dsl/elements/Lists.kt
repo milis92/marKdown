@@ -239,7 +239,7 @@ class ListItem(
 annotation class ListItemBuilderMarker
 
 /** Builder for [ListItem] **/
-class ListItemBuilder : ElementBuilder<ListItem>, TextLineContainerBuilder, ParagraphContainerBuilder,
+class ListItemBuilder : ElementBuilder<ListItem>, TextSpansContainerBuilder, ParagraphContainerBuilder,
     ListContainerBuilder,
     BlockQuoteContainerBuilder, HeadingContainerBuilder, CodeBlockContainerBuilder {
 

@@ -62,7 +62,7 @@ class Paragraph(
 annotation class ParagraphBuilderMarker
 
 /** Builder for [Paragraph] **/
-class ParagraphBuilder : ElementBuilder<Paragraph>, TextLineContainerBuilder {
+class ParagraphBuilder : ElementBuilder<Paragraph>, TextSpansContainerBuilder {
 
     private val elementsContainer = mutableListOf<MarkdownElement>()
 

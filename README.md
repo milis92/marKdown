@@ -50,7 +50,7 @@ markdown {
 
 ```kotlin
 markdown {
-    line("This is a" + bold("simple") + italic("line") + codeSpan("of code"))
+    line("This is a" + "simple".bold() + "line".italic() + "of code".codeSpan())
     //Or you can use spans directly if you want to have full lines emphasised:
     bold("This is a bold text")
     italic("This is an italic text")
@@ -209,6 +209,47 @@ markdown {
 Note that you can
 use [IJ Language injection](https://www.jetbrains.com/help/idea/using-language-injections.html#language_annotation) to
 get a bit of help from your IDE
+
+</details>
+
+<details>
+<summary style="font-size:18px;">Image and Url Spans</summary>
+
+##### Creating a simple URL:
+
+```kotlin
+markdown {
+    link("Google", URI("https://www.google.com"))
+}
+```
+
+##### Creating a simple Image:
+
+```kotlin
+markdown {
+    image("Google", URI("https://www.google.com"))
+}
+```
+
+##### Using URL Element as Line span :
+
+```kotlin
+markdown {
+    line {
+        "This is a link: " + "Google".link(URI("https://www.google.com"))
+    }
+}
+```
+
+##### Using Image Element as Line span :
+
+```kotlin
+markdown {
+    line {
+        "This is an image: " + "Google".image(URI("https://www.google.com"))
+    }
+}
+```
 
 </details>
 

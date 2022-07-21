@@ -3,6 +3,9 @@ package com.herman.markdown_dsl.elements
 import com.herman.markdown_dsl.ElementBuilder
 import com.herman.markdown_dsl.ElementContainerBuilder
 import com.herman.markdown_dsl.MarkdownElement
+import com.herman.markdown_dsl.elements.EmphasisMarker.Asterisks
+import com.herman.markdown_dsl.elements.EmphasisMarker.Underscore
+import java.net.URI
 
 /**
  * ## Text Line
@@ -129,19 +132,19 @@ class Italic(
 /** Creates inlined piece of italic text **/
 @JvmName("toItalic")
 fun String.italic(
-    emphasisMarker: EmphasisMarker = EmphasisMarker.Asterisks
+    emphasisMarker: EmphasisMarker = Underscore
 ) = Italic(this, emphasisMarker).toMarkdown()
 
 /** Creates inlined piece of italic text **/
 fun italic(
     content: String,
-    emphasisMarker: EmphasisMarker = EmphasisMarker.Asterisks
+    emphasisMarker: EmphasisMarker = Underscore
 ) = Italic(content, emphasisMarker).toMarkdown()
 
 /** Creates inlined piece of italic text **/
 fun italic(
     content: () -> String,
-    emphasisMarker: EmphasisMarker = EmphasisMarker.Asterisks
+    emphasisMarker: EmphasisMarker = Underscore
 ) = Italic(content(), emphasisMarker).toMarkdown()
 
 /**
@@ -220,19 +223,19 @@ internal class Bold(
 
 @JvmName("toBold")
 fun String.bold(
-    emphasisMarker: EmphasisMarker = EmphasisMarker.Underscore
+    emphasisMarker: EmphasisMarker = Asterisks
 ) = Bold(this, emphasisMarker).toMarkdown()
 
 /** Creates inlined piece of bold text **/
 fun bold(
     content: String,
-    emphasisMarker: EmphasisMarker = EmphasisMarker.Underscore
+    emphasisMarker: EmphasisMarker = Asterisks
 ) = Bold(content, emphasisMarker).toMarkdown()
 
 /** Creates inlined piece of bold text **/
 fun bold(
     content: () -> String,
-    emphasisMarker: EmphasisMarker = EmphasisMarker.Underscore
+    emphasisMarker: EmphasisMarker = Asterisks
 ) = Bold(content(), emphasisMarker).toMarkdown()
 
 /**
@@ -318,29 +321,27 @@ fun codeSpan(content: () -> String) = CodeSpan(content()).toMarkdown()
  */
 internal class Link(
     private val text: String,
-    private val path: String,
+    private val path: URI,
     private val title: String = ""
 ) : MarkdownElement() {
 
-    override fun toMarkdown(): String = "[$text]($path $title)"
+    override fun toMarkdown(): String = buildString {
+        append("[$text]")
+        append("($path")
+        if (title.isNotEmpty()) {
+            append(" $title")
+        } else {
+            append(")")
+        }
+    }
 }
 
 /** Creates inlined link **/
 @JvmName("toLink")
-fun String.link(path: String, title: String = "") = Link(this, path, title).toMarkdown()
+fun String.link(path: URI, title: String = "") = Link(this, path, title).toMarkdown()
 
 /** Creates inlined link **/
-fun link(text: String, path: String, title: String = "") = Link(text, path, title).toMarkdown()
-
-/** Creates inlined link **/
-fun link(content: () -> Triple<String, String, String>) {
-    val contentTriple = content()
-    Link(
-        contentTriple.first,
-        contentTriple.second,
-        contentTriple.third
-    ).toMarkdown()
-}
+fun link(text: String, path: URI, title: String = "") = Link(text, path, title).toMarkdown()
 
 /**
  * ## [Image](https://daringfireball.net/projects/markdown/syntax#img)
@@ -366,82 +367,80 @@ fun link(content: () -> Triple<String, String, String>) {
  */
 internal class Image(
     private val text: String,
-    private val path: String,
+    private val path: URI,
     private val title: String = ""
 ) : MarkdownElement() {
 
-    override fun toMarkdown(): String = "![$text]($path $title)"
+    override fun toMarkdown(): String = buildString {
+        append("![$text]")
+        append("($path")
+        if (title.isNotEmpty()) {
+            append(" $title")
+        } else {
+            append(")")
+        }
+    }
 }
 
 /** Creates inlined image **/
 @JvmName("toImage")
-fun String.image(path: String, title: String = "") = Image(this, path, title).toMarkdown()
+fun String.image(path: URI, title: String = "") = Image(this, path, title).toMarkdown()
 
 /** Creates inlined image **/
-fun image(text: String, path: String, title: String = "") = Image(text, path, title).toMarkdown()
-
-/** Creates inlined link **/
-fun image(content: () -> Triple<String, String, String>) {
-    val contentTriple = content()
-    Image(
-        contentTriple.first,
-        contentTriple.second,
-        contentTriple.third
-    ).toMarkdown()
-}
+fun image(text: String, path: URI, title: String = "") = Image(text, path, title).toMarkdown()
 
 /**
  * Marker interface representing *parent* [element builders][ElementBuilder]
  * that should support [TextLine], [Bold], [Italic], [CodeSpan], [Link],[Image] as their nested elements.
  *
  * Implementations of this interface get all the idiomatic extensions registered
- * to the context of [TextLineContainerBuilder].
+ * to the context of [TextSpansContainerBuilder].
  *
  * Default implementation simply adds TextSpan element to the list of nested elements, which should be enough for
  * most of the parent implementations.
  */
-interface TextLineContainerBuilder : ElementContainerBuilder {
+interface TextSpansContainerBuilder : ElementContainerBuilder {
     fun line(content: String) {
         addToContainer(TextLine(content))
     }
 
-    fun bold(content: String) {
-        addToContainer(Bold(content, EmphasisMarker.Underscore))
+    fun bold(content: String, emphasisMarker: EmphasisMarker = Asterisks) {
+        addToContainer(Bold(content, emphasisMarker))
     }
 
-    fun italic(content: String) {
-        addToContainer(Italic(content, EmphasisMarker.Asterisks))
+    fun italic(content: String, emphasisMarker: EmphasisMarker = Underscore) {
+        addToContainer(Italic(content, emphasisMarker))
     }
 
     fun codeSpan(content: String) {
         addToContainer(CodeSpan(content))
     }
 
-    fun link(text: String, url: String, title: String = "") {
+    fun link(text: String, url: URI, title: String = "") {
         addToContainer(Link(text, url, title))
     }
 
-    fun image(text: String, url: String, title: String = "") {
+    fun image(text: String, url: URI, title: String = "") {
         addToContainer(Image(text, url, title))
     }
 }
 
 /** Constructs a new simple text line **/
-inline fun TextLineContainerBuilder.line(
+inline fun TextSpansContainerBuilder.line(
     content: () -> String
 ) {
     line(content())
 }
 
 /** Constructs a new simple text line **/
-inline fun TextLineContainerBuilder.bold(
+inline fun TextSpansContainerBuilder.bold(
     content: () -> String
 ) {
     bold(content())
 }
 
 /** Constructs a new simple text line **/
-inline fun TextLineContainerBuilder.italic(
+inline fun TextSpansContainerBuilder.italic(
     content: () -> String
 ) {
     italic(content())

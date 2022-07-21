@@ -5,18 +5,14 @@ import com.herman.markdown_dsl.elements.BlockQuoteContainerBuilder
 import com.herman.markdown_dsl.elements.CodeBlockContainerBuilder
 import com.herman.markdown_dsl.elements.Heading
 import com.herman.markdown_dsl.elements.HeadingContainerBuilder
-import com.herman.markdown_dsl.elements.HeadingTag
 import com.herman.markdown_dsl.elements.HorizontalRule
 import com.herman.markdown_dsl.elements.HorizontalRuleContainerBuilder
-import com.herman.markdown_dsl.elements.HorizontalRuleTag
 import com.herman.markdown_dsl.elements.TextLine
 import com.herman.markdown_dsl.elements.ListContainerBuilder
-import com.herman.markdown_dsl.elements.UnorderedListTag
 import com.herman.markdown_dsl.elements.OrderedList
 import com.herman.markdown_dsl.elements.ParagraphContainerBuilder
-import com.herman.markdown_dsl.elements.TextLineContainerBuilder
+import com.herman.markdown_dsl.elements.TextSpansContainerBuilder
 import com.herman.markdown_dsl.elements.UnderlinedHeading
-import com.herman.markdown_dsl.elements.UnderlinedHeadingTag
 import com.herman.markdown_dsl.elements.UnorderedList
 import com.herman.markdown_dsl.elements.Paragraph
 import com.herman.markdown_dsl.elements.CodeBlock
@@ -49,7 +45,7 @@ data class Markdown(val content: String) {
  * @see UnorderedList
  */
 @MarkdownBuilderMarker
-open class MarkdownBuilder : TextLineContainerBuilder, ParagraphContainerBuilder,
+open class MarkdownBuilder : TextSpansContainerBuilder, ParagraphContainerBuilder,
     ListContainerBuilder, BlockQuoteContainerBuilder, HeadingContainerBuilder, HorizontalRuleContainerBuilder,
     CodeBlockContainerBuilder {
 
@@ -58,30 +54,6 @@ open class MarkdownBuilder : TextLineContainerBuilder, ParagraphContainerBuilder
     override fun addToContainer(element: MarkdownElement) {
         elementsContainer.add(element)
     }
-
-    override fun line(content: String) = addToContainer(TextLine(content))
-
-    override fun heading(
-        content: String,
-        style: HeadingTag
-    ) = addToContainer(Heading(content, style))
-
-    override fun underlinedHeading(
-        content: String,
-        style: UnderlinedHeadingTag
-    ) = addToContainer(UnderlinedHeading(content, style))
-
-    override fun horizontalRule(style: HorizontalRuleTag) = addToContainer(HorizontalRule(style))
-
-    override fun blockQuote(content: String) = addToContainer(BlockQuote(content))
-
-    override fun orderedList(items: List<String>) = addToContainer(OrderedList(items))
-
-    override fun unorderedList(
-        items: List<String>,
-        style: UnorderedListTag
-    ) = addToContainer(UnorderedList(items, style))
-
     /**
      * @suppress
      */
@@ -103,7 +75,7 @@ open class MarkdownBuilder : TextLineContainerBuilder, ParagraphContainerBuilder
                     appendLine()
                     appendLine(element)
                 }
-        }.trim()
+        }.removeSurrounding("\n")
         return Markdown(content)
     }
 }
