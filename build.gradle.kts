@@ -7,8 +7,8 @@ plugins {
 
 allprojects {
     // Fail fast if there is no group or properties in gradle.properties
-    group = project.property("GROUP_ID")!!
-    version = "${project.property("VERSION")!!} ${System.getenv("VERSION_SUFFIX") ?: ""}"
+    group = project.property("GROUP")!!
+    version = "${project.property("VERSION_NAME")!!}${System.getenv("VERSION_SUFFIX") ?: ""}"
 }
 
 val detektFormatting = libs.detekt.formatting
