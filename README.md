@@ -9,11 +9,26 @@
 A Kotlin DSL for effortless creation of beautiful Markdown pages,
 supporting both basic and extended syntax (Coming soon™️).
 
+
+[![Maven metadata URL](https://img.shields.io/maven-metadata/v?label=Release&metadataUrl=https://repo1.maven.org/maven2/io/github/milis92/kotlin_markdown/basic/maven-metadata.xml)](https://repo1.maven.org/maven2/io/github/milis92/kotlin_markdown)
+[![Maven metadata URL](https://img.shields.io/maven-metadata/v?label=Snapshot&metadataUrl=https://s01.oss.sonatype.org/content/repositories/snapshots/io/github/milis92/kotlin_markdown/basic/maven-metadata.xml)](https://s01.oss.sonatype.org/content/repositories/snapshots/io/github/milis92/kotlin_markdown)
 ---
 
 # ☁️ Setup
 
-> Coming soon
+```kotlin
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // include for Common module
+    implementation("io.github.milis92.kotlin_markdown:basic:$latest_version_here")
+
+    // include for JVM target
+    implementation("io.github.milis92.kotlin_markdown:basic-jvm:$latest_version_here")
+}
+```
 
 # 🧾 Usage
 
