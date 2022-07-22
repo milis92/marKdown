@@ -44,7 +44,7 @@ jobs:
       - uses: gradle/gradle-build-action@v2
         with:
           cache-read-only: false
-      - run: ./gradlew publish --no-daemon --no-parallel
+      - run: ./gradlew publish --no-daemon --no-parallel --no-configuration-cache
         env:
           VERSION_SUFFIX: ${{ inputs.VERSION_SUFFIX }}
           ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.SIGNING_KEY }}
